@@ -1,4 +1,4 @@
-alias: 'start up themes'
+alias: 'startUp themes'
 trigger:
   platform: homeassistant
   event: start
