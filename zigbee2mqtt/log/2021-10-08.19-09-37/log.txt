@@ -1,0 +1,52 @@
+warn  2021-10-08 19:09:44: `permit_join` set to  `true` in configuration.yaml.
+warn  2021-10-08 19:09:44: Allowing new devices to join.
+warn  2021-10-08 19:09:44: Set `permit_join` to `false` once you joined all devices.
+error 2021-10-09 01:27:49: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:27:49: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:27:49: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:27:51: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:27:52: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:27:53: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 01:27:53: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 01:27:53: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 01:27:54: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 01:35:57: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 01:35:58: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 01:36:00: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 01:36:01: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 01:36:02: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:36:03: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:36:03: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:36:06: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:37:17: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:37:17: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:37:18: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:37:20: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 01:45:29: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 15:30:13: No converter available for 'lamp' (lampAll)
+error 2021-10-09 15:30:13: No converter available for 'lamp' (lampAll)
+error 2021-10-09 15:30:13: No converter available for 'lamp' (lampAll)
+error 2021-10-09 15:30:34: Publish 'set' 'state' to 'Lamp kitchen' failed: 'Error: Command 0x842e14fffe342d5f/1 genOnOff.off({}, {"sendWhenActive":false,"timeout":10000,"disableResponse":false,"disableRecovery":false,"disableDefaultResponse":false,"direction":0,"srcEndpoint":null,"reservedBits":0,"manufacturerCode":null,"transactionSequenceNumber":null,"writeUndiv":false}) failed (Data request failed with error: 'MAC no ack' (233))'
+error 2021-10-09 19:31:42: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 19:31:42: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 19:31:42: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 19:31:43: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 19:31:45: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 19:31:45: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 19:31:46: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 19:31:46: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 19:31:47: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 19:55:06: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 19:55:06: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 19:55:06: No converter available for 'lamp' (lampLiving)
+error 2021-10-09 19:55:08: No converter available for 'lamp' (lampkitchen)
+error 2021-10-09 19:55:09: No converter available for 'lamp' (lampkitchen)
+error 2021-10-09 19:55:09: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 19:55:10: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 19:55:10: No converter available for 'lamp' (lampBedroom)
+error 2021-10-09 19:55:29: Publish 'set' 'state' to 'Lamp kitchen' failed: 'Error: Command 0x842e14fffe342d5f/1 genOnOff.on({}, {"sendWhenActive":false,"timeout":10000,"disableResponse":false,"disableRecovery":false,"disableDefaultResponse":false,"direction":0,"srcEndpoint":null,"reservedBits":0,"manufacturerCode":null,"transactionSequenceNumber":null,"writeUndiv":false}) failed (Data request failed with error: 'MAC no ack' (233))'
+error 2021-10-09 19:55:29: No converter available for 'lamp' (lampkitchen)
+error 2021-10-09 19:55:49: Publish 'set' 'effect' to 'Lamp kitchen' failed: 'Error: Command 0x842e14fffe342d5f/1 genIdentify.triggerEffect({"effectid":0,"effectvariant":0}, {"sendWhenActive":false,"timeout":10000,"disableResponse":false,"disableRecovery":false,"disableDefaultResponse":false,"direction":0,"srcEndpoint":null,"reservedBits":0,"manufacturerCode":null,"transactionSequenceNumber":null,"writeUndiv":false}) failed (Data request failed with error: 'MAC no ack' (233))'
+error 2021-10-09 19:59:32: Publish 'set' 'state' to 'Lamp kitchen' failed: 'Error: Command 0x842e14fffe342d5f/1 genOnOff.off({}, {"sendWhenActive":false,"timeout":10000,"disableResponse":false,"disableRecovery":false,"disableDefaultResponse":false,"direction":0,"srcEndpoint":null,"reservedBits":0,"manufacturerCode":null,"transactionSequenceNumber":null,"writeUndiv":false}) failed (Data request failed with error: 'MAC no ack' (233))'
+error 2021-10-09 19:59:52: Publish 'set' 'state' to 'Lamp kitchen' failed: 'Error: Command 0x842e14fffe342d5f/1 genOnOff.on({}, {"sendWhenActive":false,"timeout":10000,"disableResponse":false,"disableRecovery":false,"disableDefaultResponse":false,"direction":0,"srcEndpoint":null,"reservedBits":0,"manufacturerCode":null,"transactionSequenceNumber":null,"writeUndiv":false}) failed (Data request failed with error: 'MAC no ack' (233))'
+error 2021-10-09 20:00:13: Publish 'set' 'state' to 'Lamp kitchen' failed: 'Error: Command 0x842e14fffe342d5f/1 genOnOff.off({}, {"sendWhenActive":false,"timeout":10000,"disableResponse":false,"disableRecovery":false,"disableDefaultResponse":false,"direction":0,"srcEndpoint":null,"reservedBits":0,"manufacturerCode":null,"transactionSequenceNumber":null,"writeUndiv":false}) failed (Data request failed with error: 'MAC no ack' (233))'

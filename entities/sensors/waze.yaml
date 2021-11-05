@@ -1,0 +1,12 @@
+
+# Waze
+
+# Tracking entity to entity
+platform: waze_travel_time
+name: "Me to destination"
+origin: device_tracker.tele
+destination: sensor.dest_address
+region: 'EU'
+
+#avoid_toll_roads: true
+#avoid_subscription_roads: true

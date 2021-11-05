@@ -1,0 +1,3 @@
+platform: command_line
+name: "Download Grafana"
+command: curl -s -H "Authorization: Bearer API_KEY" "http://192.168.10.105:3000/d/YwtN9TfGk/new-dashboard-copy?orgId=1&from=1611033960749&to=1611055560749" > /home/homeassistant/.homeassistant/downloads/temperature.png

@@ -1,0 +1,4 @@
+---
+name: rui_telegram
+platform: telegram
+chat_id: !secret telegram_frenck

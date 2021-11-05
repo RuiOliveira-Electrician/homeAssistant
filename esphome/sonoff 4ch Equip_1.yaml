@@ -1,0 +1,35 @@
+substitutions:
+  display_name: sonoff4ch_equip1
+
+esphome:
+  name: ${display_name}
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pass
+
+ 
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: "rui"
+
+ota:
+  password: "rui"
+
+mqtt:
+  broker: !secret mqtt_broker
+  username: !secret mqtt_user
+  password: !secret mqtt_pass
+  birth_message:
+    topic: ${display_name}/STATUS
+    payload: 'ON'
+  will_message:
+    topic: ${display_name}/STATUS
+    payload: 'OFF'

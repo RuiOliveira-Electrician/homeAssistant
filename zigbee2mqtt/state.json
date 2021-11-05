@@ -1,0 +1,48 @@
+{
+    "0x60a423fffef82e0d": {
+        "battery": 34,
+        "update_available": true,
+        "update": {
+            "state": "available"
+        }
+    },
+    "0x5c0272fffe3c407f": {
+        "state": "OFF",
+        "update_available": true,
+        "update": {
+            "state": "available"
+        },
+        "color_temp": 250,
+        "brightness": 66,
+        "color_temp_startup": 65535,
+        "color_mode": "color_temp",
+        "power_on_behavior": "previous"
+    },
+    "0xbc33acfffe88e41e": {
+        "state": "ON",
+        "brightness": 105,
+        "update": {
+            "state": "idle"
+        },
+        "update_available": false,
+        "color_mode": "xy",
+        "color": {
+            "x": 0.404,
+            "y": 0.377
+        },
+        "color_temp": 292
+    },
+    "0xec1bbdfffe9d0fc2": {
+        "battery": 100,
+        "occupancy": false,
+        "tamper": false,
+        "battery_low": false,
+        "voltage": 3100
+    },
+    "0x842e14fffe342d5f": {
+        "color_mode": "color_temp",
+        "color_temp": 200,
+        "state": "OFF",
+        "brightness": 125
+    }
+}
