@@ -1,0 +1,63 @@
+# Generic ignores
+*.log
+*.log.*
+*.db
+*.db-shm
+*.db-wal
+*.pyc
+._*
+__pycache__
+*.gz
+
+# Directory (contents) ignores
+.cloud
+.storage
+deps
+node-red/node_modules
+
+# Specific file ignores
+.config_entries.json
+.homekit.state
+.ios.conf
+.spotify-token-cache
+.google.token
+.tradfri_psk.conf
+.uuid
+core
+html5_push_registrations.conf
+image
+google_calendars.yaml
+ip_bans.yaml
+known_devices.yaml
+neighbours
+/secrets.yaml
+
+
+# ESPHome ignores
+esphome/.*/
+esphome/**/.pioenvs/
+esphome/**/.piolibdeps/
+esphome/**/lib/
+esphome/**/src/
+esphome/**/platformio.ini
+
+# zigbee2mqtt
+zigbee2mqtt
+
+# Ignore add-on files
+aircast.xml
+airsonos.xml
+notebooks
+
+# Ignore files created by IDE's
+.vscode
+.theia
+.Trash*
+
+# Specific keeps
+!.gitkeep
+
+
+# Temporary
+/temp
+influxdb.yaml

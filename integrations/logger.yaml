@@ -1,0 +1,21 @@
+---
+# The logger integration lets you define the level of logging activities
+# in Home Assistant.
+#
+# I use this to reduce error messages for specific things,
+# so I can focus on log messages that matter to me.
+#
+logger:
+  default: warning
+  logs:
+    homeassistant.core: fatal
+    homeassistant.components.mqtt: warning
+    homeassistant.components.python_script: warning
+    homeassistant.components.python_script.my_new_script.py: debug
+    homeassistant.components.smartthings.light: info
+    homeassistant.components.glances: fatal
+    glances_api: fatal
+    aiohttp: error
+    http: info
+
+    custom_components: error
