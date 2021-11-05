@@ -1,6 +1,15 @@
 ---
-# Google calendar configuration.yaml entry
+# Google calendar 
 google:
   client_id: !secret google_client_id_calendar
   client_secret: !secret google_client_secret_calendar
 
+# Google assistant
+google_assistant:
+  project_id: home-assitant-6334a
+  service_account:
+    private_key: !secret google_assistant_private_key
+    client_email: "home-assistant-service@home-assitant-6334a.iam.gserviceaccount.com"
+  report_state: true
+  exposed_domains:
+  - light
