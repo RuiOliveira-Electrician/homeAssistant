@@ -9,6 +9,27 @@ packages:
   <<: !include_dir_named common
   board: !include boards/esp_wrover_kit.yaml
 
+mqtt:
+  broker: !secret mqtt_broker
+  username: !secret mqtt_user
+  password: !secret mqtt_pass
+  birth_message:
+    topic: ${name}/status
+    payload: 'online'
+  will_message:
+    topic: ${name}/status
+    payload: 'offline'
+  on_message:
+    - topic: ${name}/ota_mode
+      payload: 'on'
+      then:
+        - deep_sleep.prevent: deep_sleep_1
+    - topic: ${name}/ota_mode
+      payload: 'off'
+      then:
+        - deep_sleep.enter: deep_sleep_1
+
+
 sensor:
   - platform: dht
     pin: 15
