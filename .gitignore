@@ -8,6 +8,7 @@
 ._*
 __pycache__
 *.gz
+.*/
 
 # Directory (contents) ignores
 .cloud
@@ -31,15 +32,8 @@ ip_bans.yaml
 known_devices.yaml
 neighbours
 /secrets.yaml
-
-
-# ESPHome ignores
-esphome/.*/
-esphome/**/.pioenvs/
-esphome/**/.piolibdeps/
-esphome/**/lib/
-esphome/**/src/
-esphome/**/platformio.ini
+service_account.json
+esphome/.gitignore
 
 # zigbee2mqtt
 zigbee2mqtt
@@ -49,14 +43,8 @@ aircast.xml
 airsonos.xml
 notebooks
 
-# Ignore files created by IDE's
-.vscode
-.theia
-.Trash*
-
 # Specific keeps
-!.gitkeep
-
+!.gitignore/
 
 # Temporary
 /temp
