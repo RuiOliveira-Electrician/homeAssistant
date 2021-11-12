@@ -1225,8 +1225,8 @@
     },
     "node-red-node-geofence": {
         "name": "node-red-node-geofence",
-        "version": "0.3.0",
-        "local": false,
+        "version": "0.3.1",
+        "local": true,
         "user": true,
         "nodes": {
             "geofence": {
@@ -1235,10 +1235,10 @@
                     "geofence"
                 ],
                 "enabled": true,
-                "local": false,
+                "local": true,
                 "user": false,
                 "module": "node-red-node-geofence",
-                "file": "/opt/node_modules/node-red-node-geofence/geofence.js"
+                "file": "/config/node-red/node_modules/node-red-node-geofence/geofence.js"
             }
         }
     },
@@ -1423,7 +1423,7 @@
     },
     "node-red-contrib-telegrambot": {
         "name": "node-red-contrib-telegrambot",
-        "version": "8.9.6",
+        "version": "10.0.9",
         "local": true,
         "user": true,
         "nodes": {
@@ -1443,12 +1443,11 @@
                 "module": "node-red-contrib-telegrambot",
                 "file": "/config/node-red/node_modules/node-red-contrib-telegrambot/telegrambot/99-telegrambot.js"
             }
-        },
-        "pending_version": "10.0.9"
+        }
     },
     "node-red-contrib-timeout": {
         "name": "node-red-contrib-timeout",
-        "version": "1.1.4",
+        "version": "1.1.5",
         "local": true,
         "user": true,
         "nodes": {
@@ -1463,8 +1462,7 @@
                 "module": "node-red-contrib-timeout",
                 "file": "/config/node-red/node_modules/node-red-contrib-timeout/timeout.js"
             }
-        },
-        "pending_version": "1.1.5"
+        }
     },
     "node-red-contrib-persistent-fsm": {
         "name": "node-red-contrib-persistent-fsm",
