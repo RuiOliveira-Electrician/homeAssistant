@@ -1,0 +1,35 @@
+---
+# MQTT Client Component
+#
+# The MQTT Client Component sets up the MQTT connection to your broker. If you are
+# connecting to Home Assistant, you may prefer to use the native API, in which case this
+# is not needed.
+#
+# https://esphome.io/components/mqtt.html
+#
+substitutions:
+  mqtt_broker: !secret mqtt_broker
+  mqtt_user: !secret mqtt_username
+  mqtt_password: !secret mqtt_password
+
+mqtt:
+  id: mqtt_client
+  broker: "${mqtt_broker}"
+  username: "${mqtt_user}"
+  password: "${mqtt_password}"
+  topic_prefix: esphome/${name}
+  birth_message:
+    topic: esphome/${name}/status
+    payload: 'online'
+  will_message:
+    topic: esphome/${name}/status
+    payload: 'offline'
+  on_message:
+    - topic: esphome/${name}/deep_sleep_mode/ota_mode
+      payload: 'on'
+      then:
+        - deep_sleep.prevent: deep_sleep_1
+    - topic: sphome/${name}/deep_sleep_mode/ota_mode
+      payload: 'off'
+      then:
+        - deep_sleep.enter: deep_sleep_1

@@ -1,0 +1,30 @@
+substitutions:
+  slug: sensor_bedroom
+  name: Bedroom
+  description: The sensor of SensorBedroom!
+  wifi_static_ip: 192.168.1.51
+
+packages:
+  <<: !include_dir_named common
+  board: !include boards/wemos_d1_mini.yaml
+
+sensor:
+  - <<: !include sensors/dht.yaml
+    pin: D2
+    temperature:
+      name: fridge Temperature
+    humidity:
+      name: fridge Humidity
+    
+switch:
+  - platform: gpio
+    id: heater
+    name: "heater"
+    restore_mode: ALWAYS_OFF
+    pin: D4
+    inverted: true
+
+deep_sleep:
+  id: deep_sleep_1
+  run_duration: 20s
+  sleep_duration: 1min

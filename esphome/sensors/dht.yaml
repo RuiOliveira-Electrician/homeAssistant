@@ -1,0 +1,10 @@
+---
+# DHT22
+#
+platform: dht
+model: AUTO_DETECT
+temperature:
+  name: ${name} Temperature
+humidity:
+  name: ${name} Humidity
+update_interval: 10s
