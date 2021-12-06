@@ -1,0 +1,5 @@
+---
+platform: mqtt
+state_topic: 'esphome/bedroom/sensor/bedroom_temperature/state'
+name: 'sensor bedroom temperature'
+unit_of_measurement: '°C'

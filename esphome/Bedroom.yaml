@@ -1,6 +1,6 @@
 substitutions:
-  slug: sensor_bedroom
-  name: Bedroom
+  slug: bedroom
+  name: bedroom
   description: The sensor of SensorBedroom!
   wifi_static_ip: 192.168.1.51
 
@@ -11,10 +11,7 @@ packages:
 sensor:
   - <<: !include sensors/dht.yaml
     pin: D2
-    temperature:
-      name: fridge Temperature
-    humidity:
-      name: fridge Humidity
+    model: DHT22
 
 deep_sleep:
   id: deep_sleep_1
