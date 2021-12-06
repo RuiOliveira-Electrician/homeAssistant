@@ -26,10 +26,12 @@ mqtt:
     payload: 'offline'
   on_message:
     - topic: esphome/${name}/deep_sleep_mode/ota_mode
-      payload: 'on'
+      payload: 'enter'
       then:
-        - deep_sleep.prevent: deep_sleep_1
-    - topic: sphome/${name}/deep_sleep_mode/ota_mode
-      payload: 'off'
-      then:
+        - logger.log: 'OTA Mode OFF - Deep sleep ENABLED'
         - deep_sleep.enter: deep_sleep_1
+    - topic: esphome/${name}/deep_sleep_mode/ota_mode
+      payload: 'prevent'
+      then:
+        - logger.log: 'OTA Mode ON - Deep sleep DISABLED'
+        - deep_sleep.prevent: deep_sleep_1

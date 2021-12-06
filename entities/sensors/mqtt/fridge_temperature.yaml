@@ -1,5 +1,0 @@
----
-platform: mqtt
-state_topic: 'esphome/Bedroom/sensor/fridge_temperature/state'
-name: 'sensor fridge temperature'
-unit_of_measurement: '°C'

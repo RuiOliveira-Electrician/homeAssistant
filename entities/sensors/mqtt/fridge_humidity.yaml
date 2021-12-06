@@ -1,5 +1,0 @@
----
-platform: mqtt
-state_topic: 'esphome/Bedroom/sensor/fridge_humidity/state'
-name: 'sensor fridge humidity'
-unit_of_measurement: '%'
