@@ -10,4 +10,7 @@ google_assistant:
   service_account: !include ../service_account.json
   report_state: true
   exposed_domains:
+  - switch
   - light
+  - sensor
+  - script
