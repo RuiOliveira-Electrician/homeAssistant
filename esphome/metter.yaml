@@ -1,34 +1,18 @@
 substitutions:
-  display_name: esp8266
+  slug: esp8266
+  name: esp8266
+  description: Control of esp8266!
+  wifi_static_ip: 192.168.1.54
 
+packages:
+  <<: !include_dir_named common
+  board: !include boards/wemos_d1_mini.yaml
 
 esphome:
-  name: ${display_name}
-  platform: ESP8266
-  board: d1_mini
   includes:
-    - /libraries/dsmr_p1_sensor.h
+    - dsmr_p1_sensor.h
   libraries:
     - "Dsmr"
-
-# Enable logging
-logger:
-  level: DEBUG
-  esp8266_store_log_strings_in_flash: False
-# Enable Home Assistant API
-api:
-  password: !secret espHome_api_password
-  encryption: 
-    key: !secret espHome_api_encryptionKey
-
-ota:
-  password: !secret espHome_ota
-
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_pass
-
-captive_portal:
 
 uart:
   - rx_pin: D2
@@ -117,3 +101,6 @@ sensor:
     - name: "Gas Meter M3 Sensor"
       unit_of_measurement: m3
       accuracy_decimals: 3 
+
+deep_sleep:
+  id: deep_sleep_1

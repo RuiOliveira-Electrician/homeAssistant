@@ -1,0 +1,10 @@
+---
+# Deep Sleep Component
+#
+# The deep_sleep component can be used to automatically enter a deep sleep mode on the
+# ESP8266/ESP32 after a certain amount of time.
+#
+# https://esphome.io/components/deep_sleep.html
+#
+deep_sleep:
+  id: deep_sleep_1

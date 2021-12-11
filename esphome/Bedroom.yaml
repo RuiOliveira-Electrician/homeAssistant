@@ -14,6 +14,5 @@ sensor:
     model: DHT22
 
 deep_sleep:
-  id: deep_sleep_1
   run_duration: 20s
   sleep_duration: 1min
