@@ -13,4 +13,5 @@ google_assistant:
   - switch
   - light
   - sensor
-  - script
+  - climate
+#   - script
