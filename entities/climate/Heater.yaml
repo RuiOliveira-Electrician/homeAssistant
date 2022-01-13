@@ -5,8 +5,8 @@
 # https://www.home-assistant.io/integrations/climate/
 #
 - platform: generic_thermostat
-  name: gas heater
-  heater: switch.heater
+  name: heater
+  heater: switch.boiler
   target_sensor: sensor.bedroom_temperature
   min_temp: 15
   max_temp: 21

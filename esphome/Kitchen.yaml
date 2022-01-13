@@ -10,8 +10,8 @@ packages:
 
 switch:
   - platform: gpio
-    id: heater
-    name: "heater"
+    id: boiler
+    name: "boiler"
     restore_mode: ALWAYS_OFF
     pin: D2
 
