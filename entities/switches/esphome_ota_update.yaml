@@ -1,0 +1,9 @@
+platform: mqtt
+name: "esphome ota update"
+state_topic: "esphome/ota_update"
+command_topic: "esphome/ota_update"
+payload_on: "prevent"
+payload_off: "enter"
+optimistic: true
+retain: true
+icon: mdi:update
