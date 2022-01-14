@@ -10,8 +10,7 @@ packages:
 
 switch:
   - platform: gpio
-    id: boiler
-    name: "boiler"
+    name: ${name} boiler
     restore_mode: ALWAYS_OFF
     pin: D2
 

@@ -6,7 +6,7 @@
 #
 - platform: generic_thermostat
   name: heater
-  heater: switch.boiler
+  heater: switch.kitchen_boiler
   target_sensor: sensor.bedroom_temperature
   min_temp: 15
   max_temp: 21
