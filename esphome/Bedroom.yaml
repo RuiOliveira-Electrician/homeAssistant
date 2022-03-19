@@ -8,11 +8,41 @@ packages:
   <<: !include_dir_named common
   board: !include boards/wemos_d1_mini.yaml
 
+
+dallas:
+  - pin: D2
+   # update_interval: 20s
+    # address: 0x6e0317231256ff28
+
 sensor:
   - <<: !include sensors/dht.yaml
-    pin: D2
+    pin: D3
     model: DHT22
 
+  - platform: dallas
+    address: 0x060517a19f37ff28
+    name: snakeHeaterPad Temperature 
+    
+  - platform: dallas
+    address: 0xf50417b27530ff28
+    name: snakeWatter Temperature 
+  
+output:
+  - platform: ac_dimmer
+    id: dimmer1
+    gate_pin: D7
+    zero_cross_pin:
+      number: D6
+      mode:
+        input: true
+      inverted: yes
+
+light:
+  - platform: monochromatic
+    output: dimmer1
+    name: snake thermalHeatingPad
+
+
 deep_sleep:
-  run_duration: 20s
-  sleep_duration: 1min
+ # run_duration: 20s
+ # sleep_duration: 1min
