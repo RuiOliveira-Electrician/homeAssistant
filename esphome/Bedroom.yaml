@@ -5,17 +5,23 @@ substitutions:
   wifi_static_ip: 192.168.1.51
 
 packages:
-  <<: !include_dir_named common
-  board: !include boards/wemos_d1_mini.yaml
+  <<: !include_dir_named components/common
+  <<: !include_dir_named components/mqtt
+  #<<: !include_dir_named components/api
+  board: !include components/boards/wemos_d1_mini.yaml
 
+# https://github.com/esphome/issues/issues/3177
+external_components:
+  - source: github://pr#3331
+    components: ["json"]
 
 dallas:
   - pin: D2
-   # update_interval: 20s
+    update_interval: 30s
     # address: 0x6e0317231256ff28
 
 sensor:
-  - <<: !include sensors/dht.yaml
+  - <<: !include components/sensors/dht.yaml
     pin: D3
     model: DHT22
 

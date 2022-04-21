@@ -5,8 +5,9 @@ substitutions:
   wifi_static_ip: 192.168.1.52
 
 packages:
-  <<: !include_dir_named common
-  board: !include boards/wemos_d1_mini.yaml
+  <<: !include_dir_named components/common
+  <<: !include_dir_named components/mqtt
+  board: !include components/boards/wemos_d1_mini.yaml
 
 switch:
   - platform: gpio

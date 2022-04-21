@@ -5,24 +5,29 @@ substitutions:
   wifi_static_ip: 192.168.1.53
 
 packages:
-  <<: !include_dir_named common
-  board: !include boards/wemos_d1_mini.yaml
+  <<: !include_dir_named components/common
+  <<: !include_dir_named components/mqtt
+  board: !include components/boards/esp_wrover_kit.yaml
 
-switch:
-  - platform: gpio
-    id: reset
-    restore_mode: ALWAYS_OFF
-    pin: D4
-    inverted: true
+#switch:
+#  - platform: gpio
+#    id: reset
+#    restore_mode: ALWAYS_OFF
+#    pin: D4
+#    inverted: true
 
 binary_sensor:
   - platform: gpio
     id: button
     name: ${name} button
-    pin:
-      number: D8
-      mode: INPUT_PULLUP
+    pin: 
+      number: GPIO27
+    #  mode:
+    #    input: true
+    #    pullup: true
     
 deep_sleep:
-  #run_duration: 10s
-  #sleep_duration: 4min
+  run_duration: 30s
+  #sleep_duration: 30s
+  wakeup_pin: 14
+  wakeup_pin_mode: INVERT_WAKEUP

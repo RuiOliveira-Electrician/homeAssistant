@@ -7,8 +7,8 @@
 # https://esphome.io/components/logger.html
 #
 logger:
-#  id: component_logger
+  id: component_logger
   # Disabling logging over UART by default.
   # Some devices this is needed, and in general,
   # I really don't look at it.
-#  baud_rate: 0
+  #baud_rate: 0

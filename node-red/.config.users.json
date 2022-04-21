@@ -20,7 +20,31 @@
         "menu-deploymenu-item-full": false,
         "menu-menu-item-sidebar": true,
         "debug": {
-            "filter": "filterCurrent"
+            "filter": "filterAll",
+            "filteredNodes": [
+                "47a71a7b8fa7c572",
+                "9164f6408a7b9c7a",
+                "8e5bfcd110194fe7",
+                "6f0c2a155a3dae22",
+                "95e76b206b9caeb8",
+                "cfa36323aad47817",
+                "68c88e7cd54cddcf",
+                "16c10bc8e4314730",
+                "384ecfc586660e9b",
+                "ec7a5eb28ceeab93",
+                "d346a4c928a51bf0",
+                "99a9863d2b8abcf8",
+                "82105863393f0d60",
+                "c4ca53e4704cfec1",
+                "176495f4b6854813",
+                "4ac241f7.278ac",
+                "b3e9e6a0.c9ccb8",
+                "106205c6.29351a",
+                "65d6a3ee.f8ab2c",
+                "2866cdc7.328b22",
+                "fddd795d961d788e",
+                "c1295a8e63b4ae98"
+            ]
         }
     }
 }

@@ -1,5 +1,5 @@
 ---
 platform: mqtt
-state_topic: 'esphome/bedroom/light/snake_thermalheatingpad/brightness'
+state_topic: 'esphome/bedroom/light/snake_thermalheatingpad/_brightness'
 name: 'Snake HeatingPad Brightness'
 unit_of_measurement: '%'
