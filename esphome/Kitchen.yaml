@@ -2,7 +2,7 @@ substitutions:
   slug: kitchen
   name: kitchen
   description: Control of kitchen!
-  wifi_static_ip: 192.168.1.52
+  wifi_static_ip: 192.168.10.52
 
 packages:
   <<: !include_dir_named components/common
@@ -16,7 +16,7 @@ switch:
     pin: D2
 
 sensor:
-  - <<: !include sensors/dht.yaml
+  - <<: !include components/sensors/dht.yaml
     pin: D3
     model: DHT22
 
