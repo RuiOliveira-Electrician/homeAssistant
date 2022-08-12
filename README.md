@@ -1,7 +1,9 @@
 # Website
 ![License](https://img.shields.io/github/license/rui-oliveira-tech/homeAssistant)
 
-My personal homeAssistant.
+## About
+
+This is my personal Home Assistant configuration, running my home automations.
 
 ## License
 
