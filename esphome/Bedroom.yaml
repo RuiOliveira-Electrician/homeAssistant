@@ -2,7 +2,7 @@ substitutions:
   slug: bedroom
   name: bedroom
   description: The sensor of SensorBedroom!
-  wifi_static_ip: 192.168.10.51
+  wifi_static_ip: 192.168.1.51
 
 packages:
   <<: !include_dir_named components/common

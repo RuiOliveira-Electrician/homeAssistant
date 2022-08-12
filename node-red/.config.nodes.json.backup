@@ -1,10 +1,21 @@
 {
     "node-red": {
         "name": "node-red",
-        "version": "2.2.2",
+        "version": "3.0.2",
         "local": false,
         "user": false,
         "nodes": {
+            "junction": {
+                "name": "junction",
+                "types": [
+                    "junction"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red",
+                "file": "/opt/node_modules/@node-red/nodes/core/common/05-junction.js"
+            },
             "inject": {
                 "name": "inject",
                 "types": [
@@ -428,7 +439,7 @@
     },
     "node-red-contrib-bigtimer": {
         "name": "node-red-contrib-bigtimer",
-        "version": "2.8.1",
+        "version": "2.8.2",
         "local": false,
         "user": false,
         "nodes": {
@@ -485,7 +496,7 @@
     },
     "node-red-contrib-home-assistant-websocket": {
         "name": "node-red-contrib-home-assistant-websocket",
-        "version": "0.43.1",
+        "version": "0.44.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -547,7 +558,7 @@
     },
     "node-red-contrib-interval-length": {
         "name": "node-red-contrib-interval-length",
-        "version": "0.0.5",
+        "version": "0.0.6",
         "local": false,
         "user": false,
         "nodes": {
@@ -585,7 +596,7 @@
     },
     "node-red-contrib-modbus": {
         "name": "node-red-contrib-modbus",
-        "version": "5.21.2",
+        "version": "5.23.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -891,7 +902,7 @@
     },
     "node-red-dashboard": {
         "name": "node-red-dashboard",
-        "version": "3.1.6",
+        "version": "3.1.7",
         "local": false,
         "user": false,
         "nodes": {
@@ -1149,7 +1160,7 @@
     },
     "node-red-node-email": {
         "name": "node-red-node-email",
-        "version": "1.15.0",
+        "version": "1.17.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -1170,7 +1181,7 @@
     },
     "node-red-node-feedparser": {
         "name": "node-red-node-feedparser",
-        "version": "0.2.2",
+        "version": "0.3.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -1227,7 +1238,7 @@
     },
     "node-red-node-pi-gpio": {
         "name": "node-red-node-pi-gpio",
-        "version": "2.0.2",
+        "version": "2.0.3",
         "local": false,
         "user": false,
         "nodes": {
@@ -1387,7 +1398,7 @@
     },
     "node-red-contrib-telegrambot": {
         "name": "node-red-contrib-telegrambot",
-        "version": "10.0.9",
+        "version": "11.2.4",
         "local": true,
         "user": true,
         "nodes": {
@@ -1407,8 +1418,7 @@
                 "module": "node-red-contrib-telegrambot",
                 "file": "/config/node-red/node_modules/node-red-contrib-telegrambot/telegrambot/99-telegrambot.js"
             }
-        },
-        "pending_version": "11.2.4"
+        }
     },
     "node-red-contrib-timeout": {
         "name": "node-red-contrib-timeout",
@@ -1431,7 +1441,7 @@
     },
     "node-red-contrib-persistent-fsm": {
         "name": "node-red-contrib-persistent-fsm",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "local": false,
         "user": false,
         "nodes": {

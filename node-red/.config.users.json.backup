@@ -18,7 +18,7 @@
         },
         "menu-deploymenu-item-node": true,
         "menu-deploymenu-item-full": false,
-        "menu-menu-item-sidebar": false,
+        "menu-menu-item-sidebar": true,
         "debug": {
             "filter": "filterAll",
             "filteredNodes": [
