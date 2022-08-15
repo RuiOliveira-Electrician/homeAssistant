@@ -1,0 +1,10 @@
+---
+# The telegram platform uses Telegram to deliver notifications from Home Assistant to
+# your Telegram application(s).
+#
+# https://www.home-assistant.io/integrations/telegram/
+#
+telegram_bot:
+  - platform: polling
+    api_key: !secret telegram_bot_api_key
+    allowed_chat_ids: !secret telegram_bot_allowed_chat_ids
