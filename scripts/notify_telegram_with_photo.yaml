@@ -1,0 +1,16 @@
+notify_telegram_with_photo: 
+  alias: "Notify telegram with photo"
+  sequence:
+  - service: camera.snapshot
+    data_template:
+      filename : /media/images/{{i_file_name}}
+    target:
+      entity_id: camera.snake_camara_hd
+  - delay : 00:00:05
+  - service: telegram_bot.send_message
+    data:
+      title: Snake
+      message: Motion sensor  
+  - service: telegram_bot.send_photo
+    data:
+      file: /media/images/{{i_file_name}}
