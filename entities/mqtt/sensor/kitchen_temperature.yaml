@@ -1,5 +1,4 @@
 ---
-platform: mqtt
 state_topic: 'esphome/kitchen/sensor/kitchen_temperature/state'
 name: 'sensor kitchen temperature'
 unit_of_measurement: '°C'
