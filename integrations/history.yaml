@@ -1,1 +1,6 @@
+---
+# Sets up Home Assistant History.
+#
+# https://www.home-assistant.io/integrations/history/
+#
 history:

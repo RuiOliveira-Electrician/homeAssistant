@@ -9,10 +9,8 @@
 # For me it is helpful to debug issues on a production
 # machine, while I develop on the Home Assistant project.
 #
-# https://www.home-assistant.io/integrations/debugpy
+# https://www.home-assistant.io/integrations/debugpy/
 #
 debugpy:
   start: false
   wait: false
-
-

@@ -5,6 +5,8 @@
 # I use this to reduce error messages for specific things,
 # so I can focus on log messages that matter to me.
 #
+# https://www.home-assistant.io/integrations/logger/
+#
 logger:
   default: warning
   logs:
