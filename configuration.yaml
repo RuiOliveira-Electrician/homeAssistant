@@ -1,3 +1,4 @@
+---
 # Welcome to my Home Assistant configuration!
 #
 # Don't be scared by the size of my configuration file...
@@ -10,6 +11,8 @@
 # thing only! Click through it, you'll get it pretty fast.
 #
 # The configuration.yaml is only used to bootstrap the system.
+#
+# https://www.home-assistant.io/integrations/homeassistant/
 #
 homeassistant:
   # Load packages
