@@ -1,4 +1,5 @@
 ---
+unique_id: mailBox_reset
 name: "mailBox reset"
 state_topic: "esphome/mailbox/resetState"
 command_topic: "esphome/mailbox/reset"
