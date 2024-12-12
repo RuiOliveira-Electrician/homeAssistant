@@ -2,10 +2,11 @@ substitutions:
   slug: kitchen
   name: kitchen
   description: Control of kitchen!
-  wifi_static_ip: 192.168.1.52
+  static_ip: 192.168.1.52
 
 packages:
   <<: !include_dir_named components/common
+  <<: !include_dir_named components/ethernet/wifi
   <<: !include_dir_named components/mqtt
   board: !include components/boards/wemos_d1_mini.yaml
 

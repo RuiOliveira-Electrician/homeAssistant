@@ -1,0 +1,52 @@
+substitutions:
+  slug: erik
+  name: erik
+  description: Control of erik!
+  static_ip: 192.168.1.55
+
+packages:
+  <<: !include_dir_named components/common
+  <<: !include_dir_named components/ethernet/cable
+  <<: !include_dir_named components/mqtt
+  board: !include components/boards/esp_wrover_kit.yaml
+
+i2c:
+  - id: bus_b
+    sda: 14
+    scl: 15
+    scan: true
+
+# Individual outputs
+mcp23017:
+  - id: 'mcp23017_hub'
+    address: 0x20
+
+# Individual outputs
+switch:
+  - platform: gpio
+    name: "MCP23017 Pin A0"
+    pin:
+      mcp23xxx: mcp23017_hub
+      # Use pin A0
+      number: 0
+      mode:
+        output: true
+      inverted: false
+
+# Individual inputs
+binary_sensor:
+  - platform: gpio
+    name: "MCP23017 Pin B7"
+    pin:
+      mcp23xxx: mcp23017_hub
+      # Use pin B7
+      number: 15
+      # One of INPUT or INPUT_PULLUP
+      mode:
+        input: true
+        pullup: true
+      inverted: false
+
+deep_sleep:
+  #run_duration: 20s
+  #sleep_duration: 2min

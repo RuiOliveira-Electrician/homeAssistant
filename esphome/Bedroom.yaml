@@ -2,10 +2,11 @@ substitutions:
   slug: bedroom
   name: bedroom
   description: The sensor of SensorBedroom!
-  wifi_static_ip: 192.168.1.51
+  static_ip: 192.168.1.51
 
 packages:
   <<: !include_dir_named components/common
+    <<: !include_dir_named components/ethernet/wifi
   <<: !include_dir_named components/mqtt
   #<<: !include_dir_named components/api
   board: !include components/boards/wemos_d1_mini.yaml

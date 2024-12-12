@@ -2,10 +2,11 @@ substitutions:
   slug: fluviusmetter
   name: fluviusmetter
   description: Control of fluviusMetter!
-  wifi_static_ip: 192.168.1.54
+  static_ip: 192.168.1.54
 
 packages:
   <<: !include_dir_named components/common
+  <<: !include_dir_named components/ethernet/wifi
   <<: !include_dir_named components/mqtt
   board: !include components/boards/wemos_d1_mini.yaml
 
