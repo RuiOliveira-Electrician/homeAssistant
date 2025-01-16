@@ -1,16 +1,77 @@
----
-# This file is used by the automations editor
-# in the Home Assistant frontend.
-#
-# I personally do not use it, mainly because I like doing this in YAML.
-# However, from time to time, it is helpful to click a bit and see
-# what the frontend makes of it.
-#
-# This file must exist for the frontend Automation editor to work.
-# Hence, it is here, empty.
-#
-# If you are looking for my automations: See automations folder.
-#
-# https://www.home-assistant.io/docs/automation/
-#
-[]
+- id: '1734035077561'
+  alias: Publish Inverter and Power Meter Data to MQTT
+  description: Publish All Inverter Data to MQTT Every 3 Seconds
+  triggers:
+  - seconds: /3
+    trigger: time_pattern
+  conditions: []
+  actions:
+  - data_template:
+      topic: Inverter/GridWatts
+      payload: '{{ (states(''sensor.power_meter_active_power'') | float) * -1 }}'
+      qos: 1
+      retain: true
+    action: mqtt.publish
+  - data_template:
+      topic: Inverter/MPPT1_Watts
+      payload: '{{ (states(''sensor.inverter_pv_1_voltage'') | float) * (states(''sensor.inverter_pv_1_current'')
+        | float) }} '
+      qos: 1
+      retain: true
+    action: mqtt.publish
+  - data_template:
+      topic: Inverter/MPPT2_Watts
+      payload: '{{ (states(''sensor.inverter_pv_2_voltage'') | float) * (states(''sensor.inverter_pv_2_current'')
+        | float) }} '
+      qos: 1
+      retain: true
+    action: mqtt.publish
+  - data_template:
+      topic: Inverter/MPPT1_Volts
+      payload: '{{ states(''sensor.inverter_pv_1_voltage'') }}'
+      qos: 1
+      retain: true
+    action: mqtt.publish
+  - data_template:
+      topic: Inverter/MPPT2_Volts
+      payload: '{{ states(''sensor.inverter_pv_2_voltage'') }}'
+      qos: 1
+      retain: true
+    action: mqtt.publish
+  - data_template:
+      topic: Inverter/MPPT1_Amps
+      payload: '{{ states(''sensor.inverter_pv_1_current'') }}'
+      qos: 1
+      retain: true
+    action: mqtt.publish
+  - data_template:
+      topic: Inverter/MPPT2_Amps
+      payload: '{{ states(''sensor.inverter_pv_2_current'') }}'
+      qos: 1
+      retain: true
+    action: mqtt.publish
+  - data_template:
+      topic: Inverter/PvWattsTotal
+      payload: '{{ states(''sensor.inverter_input_power'') }}'
+      qos: 1
+      retain: true
+    action: mqtt.publish
+  - data_template:
+      topic: Inverter/SolarKwUse
+      payload: '{{ states(''sensor.inverter_solar_kw_use'') }}'
+      qos: 1
+      retain: true
+    action: mqtt.publish
+  - data_template:
+      topic: Inverter/LoadWatts
+      payload: '{{ states(''sensor.inverter_active_power'') }}'
+      qos: 1
+      retain: true
+    action: mqtt.publish
+  - data_template:
+      topic: Inverter/Temperature
+      payload: '{{ states(''sensor.inverter_temperature'') }}'
+      qos: 1
+      retain: true
+    action: mqtt.publish
+  mode: single

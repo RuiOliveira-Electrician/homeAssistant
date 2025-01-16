@@ -1,4 +1,0 @@
----
-state_topic: 'esphome/bedroom/sensor/bedroom_humidity/state'
-name: 'sensor bedroom humidity'
-unit_of_measurement: '%'

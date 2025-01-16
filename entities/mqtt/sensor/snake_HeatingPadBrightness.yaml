@@ -1,4 +1,0 @@
----
-state_topic: 'esphome/bedroom/light/snake_thermalheatingpad/_brightness'
-name: 'Snake HeatingPad Brightness'
-unit_of_measurement: '%'

@@ -1,11 +1,11 @@
----
-unique_id: mailBox_reset
-name: "mailBox reset"
-state_topic: "esphome/mailbox/resetState"
-command_topic: "esphome/mailbox/reset"
-payload_on: "reset"
-payload_off: "resetDone"
-state_on: "true"
-state_off: "false"
-retain: false
-icon: mdi:email
+#---
+#unique_id: mailBox_reset
+#name: "mailBox reset"
+#state_topic: "esphome/mailbox/resetState"
+#command_topic: "esphome/mailbox/reset"
+#payload_on: "reset"
+#payload_off: "resetDone"
+#state_on: "true"
+#state_off: "false"
+#retain: false
+#icon: mdi:email

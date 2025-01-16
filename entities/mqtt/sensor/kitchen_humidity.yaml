@@ -1,4 +1,0 @@
----
-state_topic: 'esphome/kitchen/sensor/kitchen_humidity/state'
-name: 'sensor kitchen humidity'
-unit_of_measurement: '%'

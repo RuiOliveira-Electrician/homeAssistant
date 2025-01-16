@@ -1,10 +1,10 @@
----
-unique_id: esphome_ota_update
-name: "esphome ota update"
-icon: mdi:update
-state_topic: "esphome/ota_update"
-command_topic: "esphome/ota_update"
-payload_on: "prevent"
-payload_off: "enter"
-optimistic: true
-retain: true
+#---
+#unique_id: esphome_ota_update
+#name: "esphome ota update"
+#icon: mdi:update
+#state_topic: "esphome/ota_update"
+#command_topic: "esphome/ota_update"
+#payload_on: "prevent"
+#payload_off: "enter"
+#optimistic: true
+3retain: true

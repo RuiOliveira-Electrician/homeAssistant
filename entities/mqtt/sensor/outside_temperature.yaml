@@ -1,0 +1,4 @@
+#---
+#state_topic: 'freeds_9c94/tempCustom'
+#name: 'sensor outside temperature'
+#unit_of_measurement: '°C'
