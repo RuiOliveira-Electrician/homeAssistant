@@ -10,7 +10,7 @@
 # Basically, each file in the repository does 1 (one, uno, eins)
 # thing only! Click through it, you'll get it pretty fast.
 #
-# The configuration.yaml is only used to bootstrap the system.
+# The configuration.yaml is only used to bootstrap the system. 
 #
 # https://www.home-assistant.io/integrations/homeassistant/
 #

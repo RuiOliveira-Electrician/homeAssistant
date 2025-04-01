@@ -1,0 +1,6 @@
+---
+name: Water Box Runtime
+min: 0
+max: 1440  # 24 hours in minutes
+step: 1
+unit_of_measurement: "minutes"

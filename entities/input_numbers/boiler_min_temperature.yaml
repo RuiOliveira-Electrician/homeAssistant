@@ -1,0 +1,7 @@
+---
+name: Boiler Min Temperature
+#initial: 20
+min: 0
+max: 80
+step: 0.1
+icon: mdi:gauge

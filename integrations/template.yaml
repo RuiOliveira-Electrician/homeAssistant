@@ -1,0 +1,8 @@
+---
+# The template integration allows creating entities which derive their values from
+# other data. 
+#
+# https://www.home-assistant.io/integrations/template
+#
+template: !include_dir_list ../entities/templates
+  

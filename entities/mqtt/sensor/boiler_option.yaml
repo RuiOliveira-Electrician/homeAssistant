@@ -1,0 +1,4 @@
+---
+name: 'boiler Option'
+unique_id: 'boiler_option_11b0'
+state_topic: 'boiler/stat/pwm'

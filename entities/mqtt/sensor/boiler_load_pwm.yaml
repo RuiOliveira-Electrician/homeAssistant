@@ -1,5 +1,0 @@
-#---
-#name: Boiler Load pwm
-#unique_id: 'boiler_load'
-#state_topic: 'freeds_9c94/pwm'
-#unit_of_measurement: "%"

@@ -1,22 +1,17 @@
 ---
 name: 'Boiler'
+unique_id: 'boiler_water_heater_1'
 modes:
   - 'OFF'
   - 'MAN'
   - 'AUTO'
-mode_state_topic: 'freeds_9c94/stat/pwm'
-mode_command_topic: 'basement/boiler/mode/set'
-temperature_state_topic: 'freeds_9c94/pwm'
-temperature_state_template: >
-  {% set pwm_value = value | float %}
-  {% set min_pwm = 0 %}
-  {% set max_pwm = 100 %}
-  {% set min_temp = 0 %}
-  {% set max_temp = 60 %}
-  {{ ((pwm_value - min_pwm) / (max_pwm - min_pwm)) * (max_temp - min_temp) + min_temp }}
-temperature_command_topic: 'basement/boiler/temperature/set'
-current_temperature_topic: 'freeds_9c94/tempTermo'
+mode_state_topic: 'boiler/stat/pwm'
+mode_command_topic: 'boiler/cmnd'
+temperature_state_topic: 'boiler/pwm'
+temperature_command_topic: 'boiler/set/temperature'
+current_temperature_topic: 'boiler/tempTermo'
 temperature_unit: "C"
 precision: 1.0
-max_temp: 60
+max_temp: 50
 min_temp: 0
+retain: true
