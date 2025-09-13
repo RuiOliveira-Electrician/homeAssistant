@@ -29,6 +29,7 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     PERCENTAGE,
+    UnitOfApparentPower,
     UnitOfElectricCurrent,
     UnitOfElectricPotential,
     UnitOfEnergy,
@@ -1319,7 +1320,7 @@ EMMA_SENSOR_DESCRIPTIONS: tuple[HuaweiSolarSensorEntityDescription, ...] = (
         icon="mdi:home-battery-outline",
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY_STORAGE,
-        state_class=SensorStateClass.TOTAL_INCREASING,
+        state_class=SensorStateClass.MEASUREMENT,
         entity_registry_enabled_default=False,
     ),
     HuaweiSolarSensorEntityDescription(
@@ -1450,6 +1451,252 @@ EMMA_SENSOR_DESCRIPTIONS: tuple[HuaweiSolarSensorEntityDescription, ...] = (
         key=rn.BACKUP_POWER_STATE_OF_CHARGE,
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_A_VOLTAGE_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_B_VOLTAGE_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_C_VOLTAGE_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.LINE_VOLTAGE_A_B_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.LINE_VOLTAGE_B_C_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.LINE_VOLTAGE_C_A_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_A_CURRENT_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+        device_class=SensorDeviceClass.CURRENT,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_B_CURRENT_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+        device_class=SensorDeviceClass.CURRENT,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_C_CURRENT_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+        device_class=SensorDeviceClass.CURRENT,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.ACTIVE_POWER_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.POWER_FACTOR_BUILT_IN_ENERGY_SENSOR,
+        device_class=SensorDeviceClass.POWER_FACTOR,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.APPARENT_POWER_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfApparentPower.VOLT_AMPERE,
+        device_class=SensorDeviceClass.APPARENT_POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_A_ACTIVE_POWER_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_B_ACTIVE_POWER_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_C_ACTIVE_POWER_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.TOTAL_ACTIVE_ENERGY_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.TOTAL_NEGATIVE_ACTIVE_ENERGY_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.TOTAL_POSITIVE_ACTIVE_ENERGY_BUILT_IN_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_A_VOLTAGE_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_B_VOLTAGE_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_C_VOLTAGE_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.LINE_VOLTAGE_A_B_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.LINE_VOLTAGE_B_C_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.LINE_VOLTAGE_C_A_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_A_CURRENT_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+        device_class=SensorDeviceClass.CURRENT,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_B_CURRENT_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+        device_class=SensorDeviceClass.CURRENT,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_C_CURRENT_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+        device_class=SensorDeviceClass.CURRENT,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.ACTIVE_POWER_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.POWER_FACTOR_EXTERNAL_ENERGY_SENSOR,
+        device_class=SensorDeviceClass.POWER_FACTOR,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.APPARENT_POWER_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfApparentPower.VOLT_AMPERE,
+        device_class=SensorDeviceClass.APPARENT_POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_A_ACTIVE_POWER_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_B_ACTIVE_POWER_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.PHASE_C_ACTIVE_POWER_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.TOTAL_ACTIVE_ENERGY_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.TOTAL_NEGATIVE_ACTIVE_ENERGY_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL,
+        entity_registry_enabled_default=False,
+    ),
+    HuaweiSolarSensorEntityDescription(
+        key=rn.TOTAL_POSITIVE_ACTIVE_ENERGY_EXTERNAL_ENERGY_SENSOR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL,
         entity_registry_enabled_default=False,
     ),
 )
@@ -1664,7 +1911,7 @@ class HuaweiSolarTOUPricePeriodsSensorEntity(
             self._attr_native_value = len(data)
 
             if len(data) == 0:
-                self._attr_extra_state_attributes.clear()
+                self._attr_extra_state_attributes = {}
             elif isinstance(data[0], LG_RESU_TimeOfUsePeriod):
                 self._attr_extra_state_attributes = {
                     f"Period {idx + 1}": self._lg_resu_period_to_text(
@@ -1692,8 +1939,6 @@ class HuaweiSolarCapacityControlPeriodsSensorEntity(
     It shows the number of configured capacity control periods, and has the
     contents of them as extended attributes
     """
-
-    _attr_extra_state_attributes: dict[str, Any] = {}
 
     def __init__(
         self,
@@ -1744,7 +1989,7 @@ class HuaweiSolarCapacityControlPeriodsSensorEntity(
         else:
             self._attr_available = False
             self._attr_native_value = None
-            self._attr_extra_state_attributes.clear()
+            self._attr_extra_state_attributes = {}
 
         self.async_write_ha_state()
 
@@ -1753,8 +1998,6 @@ class HuaweiSolarForcibleChargeEntity(
     CoordinatorEntity, HuaweiSolarEntity, SensorEntity
 ):
     """Huawei Solar Sensor for the current forcible charge status."""
-
-    _attr_extra_state_attributes: dict[str, Any] = {}
 
     REGISTER_NAMES = [
         rn.STORAGE_FORCIBLE_CHARGE_DISCHARGE_SETTING_MODE,  # is SoC or time the target?
@@ -1839,7 +2082,7 @@ class HuaweiSolarForcibleChargeEntity(
         else:
             self._attr_available = False
             self._attr_native_value = None
-            self._attr_extra_state_attributes.clear()
+            self._attr_extra_state_attributes = {}
         self.async_write_ha_state()
 
 
@@ -1919,7 +2162,7 @@ class HuaweiSolarActivePowerControlModeEntity(
         else:
             self._attr_available = False
             self._attr_native_value = None
-            self._attr_extra_state_attributes.clear()
+            self._attr_extra_state_attributes = {}
         self.async_write_ha_state()
 
 

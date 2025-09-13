@@ -710,6 +710,114 @@
             },
             "backup_power_state_of_charge": {
                 "name": "Backup power Ladezustand"
+            },
+            "phase_a_voltage_built_in_energy_sensor": {
+                "name": "Phase A Spannung"
+            },
+            "phase_b_voltage_built_in_energy_sensor": {
+                "name": "Phase B Spannung"
+            },
+            "phase_c_voltage_built_in_energy_sensor": {
+                "name": "Phase C Spannung"
+            },
+            "line_voltage_a_b_built_in_energy_sensor": {
+                "name": "A-B-Netzspannung"
+            },
+            "line_voltage_b_c_built_in_energy_sensor": {
+                "name": "B-C-Netzspannung"
+            },
+            "line_voltage_c_a_built_in_energy_sensor": {
+                "name": "C-A-Netzspannung"
+            },
+            "phase_a_current_built_in_energy_sensor": {
+                "name": "Phase A Strom"
+            },
+            "phase_b_current_built_in_energy_sensor": {
+                "name": "Phase B Strom"
+            },
+            "phase_c_current_built_in_energy_sensor": {
+                "name": "Phase C Strom"
+            },
+            "active_power_built_in_energy_sensor": {
+                "name": "Wirkleistung"
+            },
+            "power_factor_built_in_energy_sensor": {
+                "name": "Leistungsfaktor"
+            },
+            "apparent_power_built_in_energy_sensor": {
+                "name": "Scheinleistung"
+            },
+            "phase_a_active_power_built_in_energy_sensor": {
+                "name": "Phase A Wirkleistung"
+            },
+            "phase_b_active_power_built_in_energy_sensor": {
+                "name": "Phase B Wirkleistung"
+            },
+            "phase_c_active_power_built_in_energy_sensor": {
+                "name": "Phase C Wirkleistung"
+            },
+            "total_active_energy_built_in_energy_sensor": {
+                "name": "Gesamte Wirkenergie"
+            },
+            "total_negative_active_energy_built_in_energy_sensor": {
+                "name": "Gesamte negative Wirkenergie"
+            },
+            "total_positive_active_energy_built_in_energy_sensor": {
+                "name": "Gesamte positive Wirkenergie"
+            },
+            "phase_a_voltage_external_energy_sensor": {
+                "name": "Phase A Spannung"
+            },
+            "phase_b_voltage_external_energy_sensor": {
+                "name": "Phase B Spannung"
+            },
+            "phase_c_voltage_external_energy_sensor": {
+                "name": "Phase C Spannung"
+            },
+            "line_voltage_a_b_external_energy_sensor": {
+                "name": "A-B-Netzspannung"
+            },
+            "line_voltage_b_c_external_energy_sensor": {
+                "name": "B-C-Netzspannung"
+            },
+            "line_voltage_c_a_external_energy_sensor": {
+                "name": "C-A-Netzspannung"
+            },
+            "phase_a_current_external_energy_sensor": {
+                "name": "Phase A Strom"
+            },
+            "phase_b_current_external_energy_sensor": {
+                "name": "Phase B Strom"
+            },
+            "phase_c_current_external_energy_sensor": {
+                "name": "Phase C Strom"
+            },
+            "active_power_external_energy_sensor": {
+                "name": "Wirkleistung"
+            },
+            "power_factor_external_energy_sensor": {
+                "name": "Leistungsfaktor"
+            },
+            "apparent_power_external_energy_sensor": {
+                "name": "Scheinleistung"
+            },
+            "phase_a_active_power_external_energy_sensor": {
+                "name": "Phase A Wirkleistung"
+            },
+            "phase_b_active_power_external_energy_sensor": {
+                "name": "Phase B Wirkleistung"
+            },
+            "phase_c_active_power_external_energy_sensor": {
+                "name": "Phase C Wirkleistung"
+            },
+            "total_active_energy_external_energy_sensor": {
+                "name": "Gesamte Wirkenergie"
+            },
+            "total_negative_active_energy_external_energy_sensor": {
+                "name": "Gesamte negative Wirkenergie"
+            },
+            "total_positive_active_energy_external_energy_sensor": {
+                "name": "Gesamte positive Wirkenergie"
             }
         },
         "select": {
