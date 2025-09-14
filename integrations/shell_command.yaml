@@ -1,0 +1,13 @@
+---
+# This integration can expose regular shell commands as actions.
+#
+# https://www.home-assistant.io/integrations/shell_command/
+#
+shell_command:
+  update_namecheap_ddns: >
+    /config/scripts/shell/update_ddns.sh
+    {{ states('input_text.ddns_host') }}
+    {{ states('input_text.ddns_domain') }}
+    {{ states('input_text.ddns_password') }}
+    {{ states('sensor.my_ip') }}
+

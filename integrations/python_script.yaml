@@ -1,0 +1,9 @@
+---
+# This integration allows you to write Python scripts that are exposed as actions in
+# Home Assistant.
+#
+# The scripts are run in a sandboxed environment.
+#
+# https://www.home-assistant.io/integrations/python_script/
+#
+python_script:

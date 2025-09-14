@@ -1,0 +1,4 @@
+ddns_host:
+  name: DDNS Host
+  initial: !secret ddns_host
+  mode: password

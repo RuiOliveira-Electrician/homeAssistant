@@ -1,0 +1,9 @@
+---
+# The Input text integration allows the user to define values that can be controlled
+# via the frontend and can be used within conditions of automation.
+#
+# It can also be configured in password mode (obscured text).
+#
+# https://www.home-assistant.io/integrations/input_text/
+#
+input_text: !include_dir_merge_named ../entities/input_text

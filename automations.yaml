@@ -561,3 +561,12 @@
           entity_id: switch.boiler_pwm_manual_mode
       alias: AUTO
   mode: single
+- id: '1757765106375'
+  alias: Update Namecheap DDNS
+  description: Automatically updates Namecheap DDNS every 10 minutes
+  triggers:
+  - minutes: /10
+    trigger: time_pattern
+  actions:
+  - action: shell_command.update_namecheap_ddns
+  mode: single
