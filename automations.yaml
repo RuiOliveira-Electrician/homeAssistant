@@ -133,7 +133,7 @@
     seconds: /20
     id: time_trigger_battery
     trigger: time_pattern
-    enabled: true
+    enabled: false
   conditions: []
   actions:
   - choose:
