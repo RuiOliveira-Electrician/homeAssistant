@@ -1,0 +1,28 @@
+substitutions:
+  wireguard_ddns_host: !secret ddns_host
+  wireguard_ddns_domain: !secret ddns_domain
+  wireguard_private_key: !secret esphome_wireguard_private_key
+  wireguard_peer_public_key: !secret esphome_wireguard_peer_public_key
+
+wifi:
+  use_address: "${wireguard_address}"
+
+wireguard:
+  private_key: "${wireguard_private_key}"
+  peer_public_key: "${wireguard_peer_public_key}"
+  peer_endpoint: "${wireguard_ddns_host}.${wireguard_ddns_domain}"
+  address: "${wireguard_address}"
+  netmask: 0.0.0.0
+  peer_allowed_ips:
+    - 192.168.1.0/24
+  require_connection_to_proceed: true
+
+binary_sensor:
+- platform: wireguard
+  status:
+    name: "${name} WireGuard Status"
+
+sensor:
+  - platform: wireguard
+    latest_handshake:
+      name: 'WireGuard Latest Handshake'

@@ -1,0 +1,27 @@
+substitutions:
+  slug: watterpump
+  name: watterpump
+  description: Control of watterpump!
+  wifi_static_ip: 192.168.1.52
+
+packages:
+  <<: !include_dir_named common
+  board: !include boards/wemos_d1_mini.yaml
+
+switch:
+  - platform: gpio
+    id: water_pump_relay
+    name: "Water Pump Relay"
+    restore_mode: ALWAYS_OFF
+    pin: D5
+    inverted: true
+
+binary_sensor:
+  - platform: gpio
+    id: water_pump_status
+    name: "Water Pump Status"
+    pin:
+      number: GPIO2
+      mode: INPUT
+      inverted: false
+    device_class: power
