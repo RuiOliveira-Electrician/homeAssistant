@@ -1,0 +1,56 @@
+substitutions:
+  slug: water_box
+  device_id: 1
+  description: Control of Water Box
+  wireguard_address: !secret esphome_wireguard_address_water_box
+  wireguard_private_key: !secret esphome_wireguard_private_key_water_box
+
+packages:
+  wifi_config: !include wifi_connection/wireguard.yaml
+  board: !include boards/wemos_d1_mini.yaml
+  <<: !include_dir_named common
+
+uart:
+  tx_pin: GPIO14  # D5
+  rx_pin: GPIO12  # D6
+  baud_rate: 9600
+
+# === WATER BOX VALVE ===
+switch:
+  - platform: gpio
+    pin: D4                      # GPIO controlling valve D1 (GPIO5) or D2 (GPIO4)
+    name: "Valve #${device_id}"
+    id: switch_water_valve
+    icon: "mdi:valve"
+    restore_mode: RESTORE_DEFAULT_OFF
+    on_turn_on:
+      - logger.log: "Valve opened"
+    on_turn_off:
+      - logger.log: "Valve closed"
+      
+
+# === MANUAL BUTTONS ===
+#binary_sensor:
+#  - platform: gpio
+#    id: pump_switch
+#    name: "Pump Contactor Switch"
+#    pin:
+#      number: GPIO4      # Connect your two-position switch here
+#      mode: INPUT_PULLUP
+#      inverted: true
+#    device_class: power
+#    on_press:
+#      - switch.turn_on: water_pump_contactor
+#    on_release:
+#      - switch.turn_off: water_pump_contactor
+
+# === ULTRASONIC WATER LEVEL SENSOR ===
+sensor:
+  - platform: "jsn_sr04t"
+    name: "Level #${device_id}"
+    filters:
+      - quantile:
+          window_size: 10
+          send_every: 50
+          send_first_at: 1
+          quantile: .9

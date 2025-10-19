@@ -17,12 +17,12 @@ mqtt:
   broker: "${mqtt_broker}"
   username: "${mqtt_user}"
   password: "${mqtt_password}"
-  topic_prefix: esphome/${name}
+  topic_prefix: esphome/${slug}
   birth_message:
-    topic: esphome/${name}/status
+    topic: esphome/${slug}/status
     payload: 'online'
   will_message:
-    topic: esphome/${name}/status
+    topic: esphome/${slug}/status
     payload: 'offline'
   #on_message:
   #  - topic: esphome/${name}/deep_sleep_mode/ota_mode

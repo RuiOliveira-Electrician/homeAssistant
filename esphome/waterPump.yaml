@@ -1,0 +1,43 @@
+substitutions:
+  slug: water_pump
+  device_id: 2
+  description: Control of Water Pump!
+  wireguard_address: !secret esphome_wireguard_address_water_pump
+  wireguard_private_key: !secret esphome_wireguard_private_key_water_pump
+
+packages:
+  wifi_config: !include wifi_connection/wireguard.yaml
+  board: !include boards/wemos_d1_mini.yaml
+  <<: !include_dir_named common
+
+# === SWITCH TO CONTROL WATER PUMP ===
+switch:
+  - platform: gpio
+    pin: D4                 # Change to your actual relay control pin D1 (GPIO5) or D2 (GPIO4)
+    name: "Contactor #${device_id}"
+    id: switch_contactor
+    icon: "mdi:water-pump"
+    restore_mode: RESTORE_DEFAULT_OFF
+    on_turn_on:
+      - logger.log: "Water pump turned ON"
+    on_turn_off:
+      - logger.log: "Water pump turned OFF"
+
+# === PRESSURE SENSOR TO DETECT WATER FLOW / PUMP ACTIVITY ===
+binary_sensor:
+  - platform: gpio
+    id: binary_sensor_pressure
+    name: "Pressure Sensor #${device_id}"
+    icon: "mdi:gauge"
+    pin:
+      number: D1
+      mode: INPUT
+      inverted: false
+    device_class: safety   # changed from 'pressure'
+    filters:
+      - delayed_on: 200ms
+      - delayed_off: 200ms
+    on_press:
+      - logger.log: "Pressure detected — water pump active or line pressurized"
+    on_release:
+      - logger.log: "No pressure — water pump off or no water flow"

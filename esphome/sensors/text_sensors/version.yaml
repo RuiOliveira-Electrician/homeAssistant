@@ -8,4 +8,4 @@
 #
 platform: version
 id: text_sensor_version
-name: "${name} ESPHome Version"
+name: "ESPHome Version #${device_id}"

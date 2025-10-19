@@ -8,21 +8,11 @@
 #
 # https://esphome.io/components/sensor/wifi_signal.html
 #
-platform: template
-id: sensor_wifi_signal_percentage
-name: "${name} Wi-Fi Signal Percentage"
-icon: "mdi:wifi"
+platform: copy # Reports the WiFi signal strength in %
+source_id: wifi_signal_db
+name: "WiFi Signal Percent #${device_id}"
+filters:
+  - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
 unit_of_measurement: "%"
-update_interval: never
-lambda: |-
-  if (id(sensor_wifi_signal).state) {
-    if (id(sensor_wifi_signal).state <= -100 ) {
-      return 0;
-    } else if (id(sensor_wifi_signal).state >= -50) {
-      return 100;
-    } else {
-      return 2 * (id(sensor_wifi_signal).state + 100);
-    }
-  } else {
-    return NAN;
-  }
+entity_category: "diagnostic"
+device_class: ""

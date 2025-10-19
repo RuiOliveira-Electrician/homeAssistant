@@ -270,6 +270,11 @@
       sequence:
       - entity_id: switch.boiler_relay_1
         action: switch.turn_on
+      - action: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.water_pump_contactor_2
     - conditions:
       - condition: trigger
         id: power_change
@@ -290,6 +295,11 @@
       sequence:
       - entity_id: switch.boiler_relay_1
         action: switch.turn_off
+      - action: switch.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.water_pump_contactor_2
   mode: single
 - id: '1741732744615'
   alias: Troubleshoot inverter
