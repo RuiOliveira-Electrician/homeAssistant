@@ -3,5 +3,5 @@ name: Boiler Adjustment Factor
 initial: 00
 min: 0
 max: 200
-step: 0.1
-icon: mdi:gauge
+step: 1
+icon: mdi:tune

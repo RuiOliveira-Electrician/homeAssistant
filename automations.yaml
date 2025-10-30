@@ -1,9 +1,9 @@
 - id: '1734035077561'
-  alias: Publish Inverter and Power Meter Data to MQTT to Freeds
-  description: Freeds receive other data
+  alias: Publish Inverter & Power Meter Data to Freeds MQTT
+  description: Sends inverter and power meter data to Freeds system
   triggers:
   - entity_id: sensor.boiler_surplus_load
-    id: state_freeds
+    id: trigger_boiler_load_change
     trigger: state
   - entity_id:
     - sensor.power_meter_active_power
@@ -14,7 +14,7 @@
     - sensor.inverter_input_power
     - sensor.inverter_solar_kw_use
     - sensor.inverter_internal_temperature
-    id: state_inverter
+    id: trigger_inverter_state_change
     trigger: state
     enabled: true
   conditions:
@@ -30,19 +30,19 @@
   - choose:
     - conditions:
       - condition: trigger
-        id: state_freeds
+        id: trigger_boiler_load_change
       sequence:
       - data:
           topic: Inverter/GridWatts
-          payload: "{{ \n  (states('sensor.power_meter_active_power') | float) * -1
-            +\n  ((states('sensor.boiler_surplus_load') | float) - (states('input_number.memory_boiler_after_inverter_data_polling')
+          payload: "{{ \n  (states('sensor.power_meter_active_power') | float) * -1+\n
+            \ ((states('sensor.boiler_surplus_load') | float) - (states('input_number.memory_boiler_after_inverter_data_polling')
             | float)) +\n  (states('input_number.boiler_adjustment_factor') | float)\n}}\n"
           qos: 1
           retain: true
         action: mqtt.publish
     - conditions:
       - condition: trigger
-        id: state_inverter
+        id: trigger_inverter_state_change
       sequence:
       - data:
           topic: Inverter/GridWatts
@@ -114,24 +114,24 @@
   mode: queued
   max: 10
 - id: '1737315230798'
-  alias: Huawei Solar data polling
-  description: ''
+  alias: Poll Huawei Solar and Power Meter Sensors
+  description: Periodically updates inverter, power meter, and battery data
   triggers:
   - hours: '*'
     minutes: '*'
     seconds: /20
-    id: time_trigger_inverter
+    id: trigger_poll_inverter
     trigger: time_pattern
     enabled: true
   - hours: '*'
     minutes: '*'
     seconds: /5
-    id: time_trigger_power_meter
+    id: trigger_poll_power_meter
     trigger: time_pattern
   - hours: '*'
     minutes: '*'
     seconds: /20
-    id: time_trigger_battery
+    id: trigger_poll_battery
     trigger: time_pattern
     enabled: false
   conditions: []
@@ -139,7 +139,7 @@
   - choose:
     - conditions:
       - condition: trigger
-        id: time_trigger_inverter
+        id: trigger_poll_inverter
       sequence:
       - target:
           entity_id: sensor.inverter_daily_yield
@@ -150,7 +150,7 @@
         enabled: true
     - conditions:
       - condition: trigger
-        id: time_trigger_power_meter
+        id: trigger_poll_power_meter
       sequence:
       - target:
           entity_id: sensor.power_meter_active_power
@@ -161,7 +161,7 @@
         enabled: true
     - conditions:
       - condition: trigger
-        id: time_trigger_battery
+        id: trigger_poll_battery
       sequence:
       - target:
           entity_id: sensor.battery_state_of_capacity
@@ -172,68 +172,26 @@
         enabled: true
   mode: queued
   max: 10
-- id: '1737590010367'
-  alias: Adjust Boiler Max and Min Temperatures
-  triggers:
-  - entity_id: input_number.boiler_min_temperature
-    id: min_temperature
-    trigger: state
-  - entity_id: input_number.boiler_max_temperature
-    id: max_temperature
-    trigger: state
-  actions:
-  - choose:
-    - conditions:
-      - condition: template
-        value_template: '{{ states(''input_number.boiler_min_temperature'') | float
-          >  states(''input_number.boiler_max_temperature'') | float }}
-
-          '
-      - condition: trigger
-        id:
-        - min_temperature
-      sequence:
-      - target:
-          entity_id: input_number.boiler_max_temperature
-        data:
-          value: '{{ states(''input_number.boiler_min_temperature'') | float }}'
-        action: input_number.set_value
-        enabled: true
-    - conditions:
-      - condition: template
-        value_template: '{{ states(''input_number.boiler_max_temperature'') | float
-          <  states(''input_number.boiler_min_temperature'') | float }}
-
-          '
-      - condition: trigger
-        id:
-        - max_temperature
-      sequence:
-      - target:
-          entity_id: input_number.boiler_min_temperature
-        data:
-          value: '{{ states(''input_number.boiler_max_temperature'') | float }}'
-        action: input_number.set_value
 - id: '1739920466122'
-  alias: Water Box Management
-  description: Controls water box runtime and activation
+  alias: Manage Water Box Runtime & Activation
+  description: Controls water box runtime and activation logic
   triggers:
   - minutes: /1
-    id: increment_runtime
+    id: trigger_increment_runtime
     trigger: time_pattern
   - at: 00:00:00
-    id: reset_runtime
+    id: trigger_reset_runtime
     trigger: time
   - entity_id:
     - sensor.power_meter_active_power
     - sensor.inverter_active_power
-    id: power_change
+    id: trigger_power_change
     trigger: state
   actions:
   - choose:
     - conditions:
       - condition: trigger
-        id: reset_runtime
+        id: trigger_reset_runtime
       sequence:
       - data:
           value: 0
@@ -243,18 +201,17 @@
           - input_number.water_box_runtime
     - conditions:
       - condition: trigger
-        id: increment_runtime
+        id: trigger_increment_runtime
       - condition: state
         entity_id: switch.boiler_relay_1
         state: 'on'
       sequence:
       - action: input_number.increment
-        data: {}
         target:
           entity_id: input_number.water_box_runtime
     - conditions:
       - condition: trigger
-        id: power_change
+        id: trigger_power_change
       - condition: state
         entity_id: switch.boiler_relay_1
         state: 'off'
@@ -271,13 +228,11 @@
       - entity_id: switch.boiler_relay_1
         action: switch.turn_on
       - action: switch.turn_on
-        metadata: {}
-        data: {}
         target:
           entity_id: switch.water_pump_contactor_2
     - conditions:
       - condition: trigger
-        id: power_change
+        id: trigger_power_change
       - condition: state
         entity_id: switch.boiler_relay_1
         state: 'on'
@@ -296,17 +251,15 @@
       - entity_id: switch.boiler_relay_1
         action: switch.turn_off
       - action: switch.turn_off
-        metadata: {}
-        data: {}
         target:
           entity_id: switch.water_pump_contactor_2
   mode: single
 - id: '1741732744615'
-  alias: Troubleshoot inverter
-  description: Troubleshoot inverter
+  alias: MQTT Troubleshooting - Inverter Diagnostics
+  description: Publishes inverter diagnostic values for debugging
   triggers:
   - entity_id: sensor.boiler_surplus_load
-    id: state_freeds
+    id: trigger_boiler_load_change
     trigger: state
   - entity_id:
     - sensor.power_meter_active_power
@@ -317,51 +270,48 @@
     - sensor.inverter_input_power
     - sensor.inverter_solar_kw_use
     - sensor.inverter_internal_temperature
-    id: state_inverter
+    id: trigger_inverter_state_change
     trigger: state
     enabled: true
   conditions: []
   actions:
   - data:
       topic: Inverter/power_meter_active_power
-      payload: "{{\n  (states('sensor.power_meter_active_power') | float(0)) * -1\n}}\n"
+      payload: '{{ (states(''sensor.power_meter_active_power'') | float(0)) * -1 }}'
       qos: 0
       retain: false
     action: mqtt.publish
-    alias: Inverter/power_meter_active_power
   - data:
       topic: Inverter/boiler_load
-      payload: "{{\n  (states('sensor.boiler_surplus_load') | float(0))\n}}\n"
+      payload: '{{ (states(''sensor.boiler_surplus_load'') | float(0)) }}'
       qos: 0
       retain: false
     action: mqtt.publish
-    alias: Inverter/boiler_load
   - data:
       topic: Inverter/memory_boiler_after_inverter_data_polling
-      payload: "{{\n  (states('input_number.memory_boiler_after_inverter_data_polling')
-        | float(0))\n}}\n"
+      payload: '{{ (states(''input_number.memory_boiler_after_inverter_data_polling'')
+        | float(0)) }}'
       qos: 0
       retain: false
     action: mqtt.publish
-    alias: Inverter/memory_boiler_after_inverter_data_polling
   mode: queued
   max: 10
 - id: '1741735826168'
-  alias: Boiler OFF-MAN-AUTO
-  description: Publish Boiler OFF-MAN-AUTO
+  alias: Boiler Mode Control (OFF/MAN/AUTO)
+  description: Controls boiler mode based on MQTT, timer, and auto/manual input
   triggers:
   - topic: boiler/cmnd
-    id: state_freeds_mqtt_cmnd
+    id: mqtt_command
     trigger: mqtt
     enabled: true
-    alias: cmnd
+    alias: MQTT Command
   - trigger: time_pattern
-    id: freeds_set
+    id: periodic_timer
     seconds: /5
-    alias: timer
+    alias: Timer 5s
     enabled: true
   - trigger: state
-    id: state_boiler_control_auto
+    id: auto_mode_change
     entity_id:
     - input_boolean.boiler_control_auto
   conditions: []
@@ -388,18 +338,20 @@
                 value_template: '{{ states(''sensor.boiler_option'') == ''MAN'' }}'
               - condition: or
                 conditions:
-                - alias: Inverter working
-                  condition: not
-                  conditions:
-                  - condition: state
-                    entity_id: sensor.inverter_inverter_state
-                    state: Standby
-                - condition: state
-                  entity_id: sensor.energy_price_hours
-                  state: highPrice
                 - condition: numeric_state
                   entity_id: sensor.boiler_heater_temperature
-                  above: input_number.boiler_min_temperature
+                  above: input_number.boiler_man_temperature
+                - condition: and
+                  conditions:
+                  - alias: Inverter working
+                    condition: not
+                    conditions:
+                    - condition: state
+                      entity_id: sensor.inverter_inverter_state
+                      state: unavailable
+                  - condition: state
+                    entity_id: sensor.energy_price_hours
+                    state: highPrice
             - alias: go off in AUTO mode
               condition: and
               conditions:
@@ -410,9 +362,12 @@
                 - condition: state
                   entity_id: sensor.inverter_inverter_state
                   state: Standby
+                - condition: state
+                  entity_id: sensor.inverter_inverter_state
+                  state: unavailable
                 - condition: numeric_state
                   entity_id: sensor.boiler_heater_temperature
-                  above: input_number.boiler_max_temperature
+                  above: input_number.boiler_auto_temperature
             enabled: true
         - alias: OFF - cmnd
           condition: and
@@ -422,13 +377,13 @@
             state: 'off'
           - condition: trigger
             id:
-            - state_freeds_mqtt_cmnd
+            - mqtt_command
           - alias: '{{ trigger.payload == ''OFF'' }}'
             condition: template
             value_template: '{{ trigger.payload == ''OFF'' }}'
         - condition: trigger
           id:
-          - state_boiler_control_auto
+          - auto_mode_change
           enabled: true
       sequence:
       - data:
@@ -458,20 +413,20 @@
             state: 'on'
           - condition: numeric_state
             entity_id: sensor.boiler_heater_temperature
-            below: input_number.boiler_min_temperature
-          - alias: Inverter not working and lowPrice
-            condition: and
+            below: input_number.boiler_man_temperature
+          - condition: or
             conditions:
+            - condition: and
+              conditions:
+              - condition: state
+                entity_id: sensor.energy_price_hours
+                state: lowPrice
+              - condition: state
+                entity_id: sensor.inverter_inverter_state
+                state: Standby
             - condition: state
               entity_id: sensor.inverter_inverter_state
-              state: Standby
-            - condition: state
-              entity_id: sensor.energy_price_hours
-              state: lowPrice
-          - condition: numeric_state
-            entity_id: input_number.boiler_min_temperature
-            below: input_number.boiler_max_temperature
-            enabled: false
+              state: unavailable
         - alias: MAN - cmnd
           condition: and
           conditions:
@@ -480,7 +435,7 @@
             state: 'off'
           - condition: trigger
             id:
-            - state_freeds_mqtt_cmnd
+            - mqtt_command
           - condition: template
             value_template: '{{ trigger.payload == ''MAN'' }}'
             alias: '{{ trigger.payload == ''MAN'' }}'
@@ -521,15 +476,12 @@
           - condition: state
             entity_id: input_boolean.boiler_control_auto
             state: 'on'
-          - alias: Inverter working
-            condition: not
-            conditions:
-            - condition: state
-              entity_id: sensor.inverter_inverter_state
-              state: Standby
+          - condition: numeric_state
+            entity_id: sensor.inverter_active_power
+            above: 100
           - condition: numeric_state
             entity_id: sensor.boiler_heater_temperature
-            below: input_number.boiler_max_temperature
+            below: input_number.boiler_auto_temperature
         - alias: AUTO - cmnd
           condition: and
           conditions:
@@ -538,26 +490,12 @@
             state: 'off'
           - condition: trigger
             id:
-            - state_freeds_mqtt_cmnd
+            - mqtt_command
           - alias: '{{ trigger.payload == ''AUTO'' }}'
             condition: template
             value_template: '{{ trigger.payload == ''AUTO'' }}'
         enabled: true
       sequence:
-      - data:
-          topic: boiler/cmnd/pwmman
-          payload: '0'
-          qos: 1
-          retain: true
-        action: mqtt.publish
-        enabled: false
-      - data:
-          topic: boiler/cmnd/pwm
-          payload: '1'
-          qos: 1
-          retain: true
-        action: mqtt.publish
-        enabled: false
       - action: switch.turn_on
         metadata: {}
         data: {}
@@ -572,8 +510,8 @@
       alias: AUTO
   mode: single
 - id: '1757765106375'
-  alias: Update Namecheap DDNS
-  description: Automatically updates Namecheap DDNS every 10 minutes
+  alias: Update Namecheap DDNS Every 10 Minutes
+  description: Automatically updates Namecheap DDNS periodically
   triggers:
   - minutes: /10
     trigger: time_pattern

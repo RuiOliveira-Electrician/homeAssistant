@@ -1,0 +1,7 @@
+---
+name: Boiler AUTO Temperature
+#initial: 20
+min: 0
+max: 80
+step: 1
+icon: mdi:thermometer

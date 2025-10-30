@@ -9,11 +9,11 @@ packages:
   wifi_config: !include wifi_connection/wireguard.yaml
   board: !include boards/wemos_d1_mini.yaml
   <<: !include_dir_named common
-
+  
 # === SWITCH TO CONTROL WATER PUMP ===
 switch:
   - platform: gpio
-    pin: D4                 # Change to your actual relay control pin D1 (GPIO5) or D2 (GPIO4)
+    pin: D1
     name: "Contactor #${device_id}"
     id: switch_contactor
     icon: "mdi:water-pump"
@@ -30,10 +30,9 @@ binary_sensor:
     name: "Pressure Sensor #${device_id}"
     icon: "mdi:gauge"
     pin:
-      number: D1
+      number: D2
       mode: INPUT
       inverted: false
-    device_class: safety   # changed from 'pressure'
     filters:
       - delayed_on: 200ms
       - delayed_off: 200ms
@@ -41,3 +40,4 @@ binary_sensor:
       - logger.log: "Pressure detected — water pump active or line pressurized"
     on_release:
       - logger.log: "No pressure — water pump off or no water flow"
+

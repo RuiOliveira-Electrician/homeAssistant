@@ -10,10 +10,7 @@ packages:
   board: !include boards/wemos_d1_mini.yaml
   <<: !include_dir_named common
 
-uart:
-  tx_pin: GPIO14  # D5
-  rx_pin: GPIO12  # D6
-  baud_rate: 9600
+
 
 # === WATER BOX VALVE ===
 switch:
@@ -44,13 +41,15 @@ switch:
 #    on_release:
 #      - switch.turn_off: water_pump_contactor
 
-# === ULTRASONIC WATER LEVEL SENSOR ===
+
+uart:
+  id: uart_bus
+  tx_pin: D1
+  rx_pin: D2
+  baud_rate: 9600
+
 sensor:
-  - platform: "jsn_sr04t"
+  - platform: jsn_sr04t
     name: "Level #${device_id}"
-    filters:
-      - quantile:
-          window_size: 10
-          send_every: 50
-          send_first_at: 1
-          quantile: .9
+    uart_id: uart_bus
+    update_interval: 10s

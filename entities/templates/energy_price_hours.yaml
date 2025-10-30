@@ -2,23 +2,20 @@ sensor:
   - name: "Energy Price Hours"
     unique_id: energy_price_hours
     state: >
+      {% set low_start = 22 %}
+      {% set low_end = 8 %}
       {% set hora = now().hour %}
-      {% if hora >= 22 or hora < 8 %}
-        lowPrice
-      {% else %}
-        highPrice
-      {% endif %}
+      {% set low = hora >= low_start or hora < low_end %}
+      {% if low %}lowPrice{% else %}highPrice{% endif %}
     availability: "{{ now() is not none }}"
     attributes:
       start_time: >
-        {% if now().hour >= 22 or now().hour < 8 %}
-          "22:00"
-        {% else %}
-          "08:00"
-        {% endif %}
+        {% set low_start = 22 %}
+        {% set low_end = 8 %}
+        {% set hora = now().hour %}
+        {% if hora >= low_start or hora < low_end %}{{ "%02d:00"|format(low_start) }}{% else %}{{ "%02d:00"|format(low_end) }}{% endif %}
       end_time: >
-        {% if now().hour >= 22 or now().hour < 8 %}
-          "08:00"
-        {% else %}
-          "22:00"
-        {% endif %}
+        {% set low_start = 22 %}
+        {% set low_end = 8 %}
+        {% set hora = now().hour %}
+        {% if hora >= low_start or hora < low_end %}{{ "%02d:00"|format(low_end) }}{% else %}{{ "%02d:00"|format(low_start) }}{% endif %}
