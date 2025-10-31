@@ -8,4 +8,3 @@
 mqtt: 
   sensor: !include_dir_list ../entities/mqtt/sensor
   switch: !include_dir_list ../entities/mqtt/switches
-  water_heater: !include_dir_list ../entities/mqtt/water_heater

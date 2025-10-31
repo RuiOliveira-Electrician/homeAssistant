@@ -1,0 +1,9 @@
+
+---
+boiler_mode:
+    name: "Boiler Mode"
+    options:
+      - "OFF"
+      - "MAN"
+      - "AUTO"
+    icon: mdi:thermostat
