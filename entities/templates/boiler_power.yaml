@@ -1,0 +1,21 @@
+sensor:
+  - name: "Boiler Power MAN"
+    unique_id: boiler_power_man
+    unit_of_measurement: "W"
+    device_class: power
+    state: >
+      {% if states('input_select.boiler_mode') == 'MAN' %}
+        {{ states('sensor.boiler_surplus_load') | float(0) }}
+      {% else %}
+        0
+      {% endif %}
+  - name: "Boiler Power AUTO"
+    unique_id: boiler_power_auto
+    unit_of_measurement: "W"
+    device_class: power
+    state: >
+      {% if states('input_select.boiler_mode') == 'AUTO' %}
+        {{ states('sensor.boiler_surplus_load') | float(0) }}
+      {% else %}
+        0
+      {% endif %}

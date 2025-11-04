@@ -41,7 +41,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         FreeDSLight(
             name="Backlight",
             # icon="mdi:alert",
-            entity_category=EntityCategory.DIAGNOSTIC,
+            entity_category=EntityCategory.CONFIG,
             button_idx=5,
             json_section="Web",
             # json_field_on="Oled",

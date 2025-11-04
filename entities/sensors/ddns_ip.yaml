@@ -1,5 +1,5 @@
-platform: command_line
-name: ddns_ip
-command: >
-  nslookup vpn.rui-oliveira.com | findstr /R /C:"Address: [0-9]" | findstr /V fe80 >> /config/ddns_debug.log 2>&1
-scan_interval: 10
+- platform: command_line
+  name: ddns_ip
+  command: >
+    nslookup vpn.rui-oliveira.com | findstr /R /C:"Address: [0-9]" | findstr /V fe80 >> /config/ddns_debug.log 2>&1
+  scan_interval: 10

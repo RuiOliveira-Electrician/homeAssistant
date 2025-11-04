@@ -1,0 +1,15 @@
+- platform: integration
+  source: sensor.boiler_power_man
+  name: "Boiler Energy MAN (Tolal)"
+  unique_id: boiler_energy_man_kwh
+  unit_prefix: k
+  round: 3
+  method: left
+
+- platform: integration
+  source: sensor.boiler_power_auto
+  name: "Boiler Energy AUTO (Tolal)"
+  unique_id: boiler_energy_auto_kwh
+  unit_prefix: k
+  round: 3
+  method: left
