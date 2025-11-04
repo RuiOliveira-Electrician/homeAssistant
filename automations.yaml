@@ -415,6 +415,7 @@
             - condition: state
               entity_id: sensor.inverter_inverter_state
               state: unavailable
+              enabled: false
         enabled: true
       sequence:
       - action: input_select.select_option
