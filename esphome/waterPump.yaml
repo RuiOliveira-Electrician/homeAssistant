@@ -10,25 +10,62 @@ packages:
   board: !include boards/wemos_d1_mini.yaml
   <<: !include_dir_named common
   
+# === GLOBAL VARIABLES ===
+globals:
+  - id: total_runtime_sec
+    type: unsigned long
+    restore_value: true
+    initial_value: '0'
+  - id: daily_runtime_sec
+    type: unsigned long
+    restore_value: true
+    initial_value: '0'
+  - id: total_consumption_kwh
+    type: float
+    restore_value: true
+    initial_value: '0.0'
+  - id: daily_consumption_kwh
+    type: float
+    restore_value: true
+    initial_value: '0.0'
+  - id: last_runtime_sec
+    type: unsigned long
+    restore_value: true
+    initial_value: '0'
+  - id: pump_power_w
+    type: float
+    restore_value: true
+    initial_value: '1200.0'
+
+# === TIME FOR DAILY RESET ===
+time:
+  - platform: sntp
+    id: ntp_time
+    timezone: "Europe/Lisbon"
+    on_time:
+      - seconds: 0
+        minutes: 0
+        hours: 0
+        then:
+          - lambda: |-
+              id(daily_runtime_sec) = 0;
+              id(daily_consumption_kwh) = 0.0;
+
 # === SWITCH TO CONTROL WATER PUMP ===
 switch:
   - platform: gpio
-    pin: D1
+    pin:
+      number: D1
     name: "Contactor #${device_id}"
-    id: switch_contactor
+    id: contactor
     icon: "mdi:water-pump"
     restore_mode: RESTORE_DEFAULT_OFF
-    on_turn_on:
-      - logger.log: "Water pump turned ON"
-    on_turn_off:
-      - logger.log: "Water pump turned OFF"
 
-# === PRESSURE SENSOR TO DETECT WATER FLOW / PUMP ACTIVITY ===
+# === PRESSURE SENSOR ===
 binary_sensor:
   - platform: gpio
-    id: binary_sensor_pressure
+    id: sensor_pressure
     name: "Pressure Sensor #${device_id}"
-    icon: "mdi:gauge"
     pin:
       number: D2
       mode: INPUT
@@ -36,8 +73,73 @@ binary_sensor:
     filters:
       - delayed_on: 200ms
       - delayed_off: 200ms
-    on_press:
-      - logger.log: "Pressure detected — water pump active or line pressurized"
-    on_release:
-      - logger.log: "No pressure — water pump off or no water flow"
 
+# === SENSORS ===
+sensor:
+  # Instantaneous Pump Power (W)
+  - platform: template
+    name: "Power #${device_id}"
+    unit_of_measurement: "W"
+    update_interval: 1s
+    lambda: |-
+      if (id(contactor).state && id(sensor_pressure).state) {
+        return id(pump_power_w);
+      } else {
+        return 0.0;
+      }
+
+  # Total Runtime in seconds
+  - platform: template
+    name: "Total Runtime #${device_id}"
+    id: sensor_total_runtime
+    unit_of_measurement: "s"
+    update_interval: 1s
+    lambda: |-
+      if (id(contactor).state && id(sensor_pressure).state) {
+        id(total_runtime_sec)++;
+      }
+      return id(total_runtime_sec);
+
+  # Daily Runtime in seconds
+  - platform: template
+    name: "Daily Runtime #${device_id}"
+    id: sensor_daily_runtime
+    unit_of_measurement: "s"
+    update_interval: 1s
+    lambda: |-
+      if (id(contactor).state && id(sensor_pressure).state) {
+        id(daily_runtime_sec)++;
+      }
+      return id(daily_runtime_sec);
+
+  # Total Energy in kWh
+  - platform: template
+    name: "Energy (Total) #${device_id}"
+    id: sensor_total_energy
+    unit_of_measurement: "kWh"
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 3
+    update_interval: 1s
+    lambda: |-
+      unsigned long runtime_sec = id(total_runtime_sec);
+      if (runtime_sec > id(last_runtime_sec)) {
+        unsigned long delta_sec = runtime_sec - id(last_runtime_sec);
+        float delta_kwh = (id(pump_power_w) * delta_sec) / (1000.0 * 3600.0);
+        id(total_consumption_kwh) += delta_kwh;
+        id(daily_consumption_kwh) += delta_kwh;
+        id(last_runtime_sec) = runtime_sec;
+      }
+      return id(total_consumption_kwh);
+
+  # Daily Energy in kWh
+  - platform: template
+    name: "Energy (Today) #${device_id}"
+    id: sensor_daily_energy
+    unit_of_measurement: "kWh"
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 3
+    update_interval: 1s
+    lambda: |-
+      return id(daily_consumption_kwh);
