@@ -80,6 +80,7 @@ sensor:
   - platform: template
     name: "Power #${device_id}"
     unit_of_measurement: "W"
+    device_class: power
     update_interval: 1s
     lambda: |-
       if (id(contactor).state && id(sensor_pressure).state) {
