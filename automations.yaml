@@ -320,7 +320,7 @@
     - input_boolean.boiler_control_auto
   - trigger: state
     entity_id:
-    - input_select.boiler_mode
+    - select.boiler_mode
   conditions: []
   actions:
   - choose:
@@ -339,7 +339,7 @@
               condition: and
               conditions:
               - condition: state
-                entity_id: input_select.boiler_mode
+                entity_id: select.boiler_mode
                 state: MAN
               - condition: or
                 conditions:
@@ -361,7 +361,7 @@
               condition: and
               conditions:
               - condition: state
-                entity_id: input_select.boiler_mode
+                entity_id: select.boiler_mode
                 state: AUTO
               - condition: or
                 conditions:
@@ -380,16 +380,16 @@
           - auto_mode_change
           enabled: true
       sequence:
-      - action: input_select.select_option
+      - action: select.select_option
         metadata: {}
         data:
           option: 'OFF'
         target:
-          entity_id: input_select.boiler_mode
+          entity_id: select.boiler_mode
       alias: 'OFF'
     - conditions:
       - condition: state
-        entity_id: input_select.boiler_mode
+        entity_id: select.boiler_mode
         state: 'OFF'
       - condition: or
         conditions:
@@ -418,16 +418,16 @@
               enabled: false
         enabled: true
       sequence:
-      - action: input_select.select_option
+      - action: select.select_option
         metadata: {}
         data:
           option: MAN
         target:
-          entity_id: input_select.boiler_mode
+          entity_id: select.boiler_mode
       alias: MAN
     - conditions:
       - condition: state
-        entity_id: input_select.boiler_mode
+        entity_id: select.boiler_mode
         state: 'OFF'
       - condition: state
         entity_id: input_boolean.boiler_control_auto
@@ -439,129 +439,11 @@
         entity_id: sensor.boiler_heater_temperature
         below: input_number.boiler_auto_temperature
       sequence:
-      - action: input_select.select_option
+      - action: select.select_option
         metadata: {}
         data:
           option: AUTO
         target:
-          entity_id: input_select.boiler_mode
+          entity_id: select.boiler_mode
       alias: AUTO
-  mode: single
-- id: '1761920320485'
-  alias: Boiler Mode Control (Two-way)
-  description: 'Controls boiler switches from input_select and updates input_select
-    from switches
-
-    '
-  triggers:
-  - entity_id:
-    - input_select.boiler_mode
-    trigger: state
-  - entity_id:
-    - switch.boiler_pwm_enabled
-    - switch.boiler_pwm_manual_mode
-    trigger: state
-  - trigger: time_pattern
-    enabled: true
-    minutes: '1'
-  actions:
-  - choose:
-    - conditions:
-      - condition: template
-        value_template: '{{ trigger.entity_id == ''input_select.boiler_mode'' }}'
-      sequence:
-      - choose:
-        - conditions:
-          - condition: state
-            entity_id: input_select.boiler_mode
-            state: AUTO
-          sequence:
-          - condition: template
-            value_template: "{{ not (is_state('switch.boiler_pwm_enabled','on') and\n
-              \       is_state('switch.boiler_pwm_manual_mode','off')) }}\n"
-          - target:
-              entity_id: switch.boiler_pwm_enabled
-            action: switch.turn_on
-          - target:
-              entity_id: switch.boiler_pwm_manual_mode
-            action: switch.turn_off
-        - conditions:
-          - condition: state
-            entity_id: input_select.boiler_mode
-            state: MAN
-          sequence:
-          - condition: template
-            value_template: "{{ not (is_state('switch.boiler_pwm_enabled','on') and\n
-              \       is_state('switch.boiler_pwm_manual_mode','on')) }}\n"
-          - target:
-              entity_id:
-              - switch.boiler_pwm_enabled
-              - switch.boiler_pwm_manual_mode
-            action: switch.turn_on
-        - conditions:
-          - condition: state
-            entity_id: input_select.boiler_mode
-            state: 'OFF'
-          sequence:
-          - condition: template
-            value_template: "{{ not (is_state('switch.boiler_pwm_enabled','off') and\n
-              \       is_state('switch.boiler_pwm_manual_mode','off')) }}\n"
-          - target:
-              entity_id:
-              - switch.boiler_pwm_enabled
-              - switch.boiler_pwm_manual_mode
-            action: switch.turn_off
-    - conditions:
-      - condition: template
-        value_template: '{{ trigger.entity_id in [''switch.boiler_pwm_enabled'',''switch.boiler_pwm_manual_mode'']
-          }}
-
-          '
-      sequence:
-      - choose:
-        - conditions:
-          - condition: state
-            entity_id: switch.boiler_pwm_enabled
-            state: 'on'
-          - condition: state
-            entity_id: switch.boiler_pwm_manual_mode
-            state: 'off'
-          - condition: template
-            value_template: '{{ not is_state(''input_select.boiler_mode'',''AUTO'')
-              }}'
-          sequence:
-          - target:
-              entity_id: input_select.boiler_mode
-            data:
-              option: AUTO
-            action: input_select.select_option
-        - conditions:
-          - condition: state
-            entity_id: switch.boiler_pwm_enabled
-            state: 'on'
-          - condition: state
-            entity_id: switch.boiler_pwm_manual_mode
-            state: 'on'
-          - condition: template
-            value_template: '{{ not is_state(''input_select.boiler_mode'',''MAN'')
-              }}'
-          sequence:
-          - target:
-              entity_id: input_select.boiler_mode
-            data:
-              option: MAN
-            action: input_select.select_option
-        - conditions:
-          - condition: state
-            entity_id: switch.boiler_pwm_enabled
-            state: 'off'
-          - condition: template
-            value_template: '{{ not is_state(''input_select.boiler_mode'',''OFF'')
-              }}'
-          sequence:
-          - target:
-              entity_id: input_select.boiler_mode
-            data:
-              option: 'OFF'
-            action: input_select.select_option
   mode: single

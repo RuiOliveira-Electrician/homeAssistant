@@ -4,7 +4,7 @@ sensor:
     unit_of_measurement: "W"
     device_class: power
     state: >
-      {% if states('input_select.boiler_mode') == 'MAN' %}
+      {% if states('select.boiler_mode') == 'MAN' %}
         {{ states('sensor.boiler_surplus_load') | float(0) }}
       {% else %}
         0
@@ -14,7 +14,7 @@ sensor:
     unit_of_measurement: "W"
     device_class: power
     state: >
-      {% if states('input_select.boiler_mode') == 'AUTO' %}
+      {% if states('select.boiler_mode') == 'AUTO' %}
         {{ states('sensor.boiler_surplus_load') | float(0) }}
       {% else %}
         0
