@@ -1,0 +1,7 @@
+---
+# The Command line integration in Home Assistant allows you to run 
+# custom shell commands to retrieve data or control devices.
+#
+# Documentation: https://www.home-assistant.io/integrations/command_line/
+#
+command_line: !include_dir_list ../entities/command_line

@@ -3,11 +3,4 @@
 #
 # https://www.home-assistant.io/integrations/shell_command/
 #
-shell_command:
-  update_namecheap_ddns: >
-    /config/scripts/shell/update_ddns.sh
-    {{ states('input_text.ddns_host') }}
-    {{ states('input_text.ddns_domain') }}
-    {{ states('input_text.ddns_password') }}
-    {{ states('sensor.my_ip') }}
-
+shell_command: !include ../entities/shell_commands/shell_commands.yaml

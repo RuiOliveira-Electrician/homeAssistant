@@ -1,0 +1,4 @@
+sensor:
+  name: ddns_ip
+  command: "dig +short vpn.rui-oliveira.com | grep -v ':' | head -n 1"
+  scan_interval: 10

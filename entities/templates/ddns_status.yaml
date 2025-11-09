@@ -1,0 +1,14 @@
+sensor:
+  - name: "ddns_status"
+    state: >
+      {% if states('sensor.ddns_ip') == states('sensor.router_external_ip') %}
+        ✅ In Sync
+      {% else %}
+        ⚠️ Out of Sync
+      {% endif %}
+    icon: >
+      {% if states('sensor.ddns_ip') == states('sensor.router_external_ip') %}
+        mdi:check-circle
+      {% else %}
+        mdi:alert-circle
+      {% endif %}

@@ -1,5 +1,0 @@
-- platform: rest
-  name: my_ip
-  resource: https://api.ipify.org?format=json
-  value_template: "{{ value_json.ip }}"
-  scan_interval: 300  # refresh every 5 minutes

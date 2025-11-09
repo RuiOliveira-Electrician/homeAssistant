@@ -1,0 +1,10 @@
+---
+# With the namecheapdns integration you can automatically update your dynamic
+# DNS entry hosted by Namecheap’s FreeDNS service.
+#
+# https://www.home-assistant.io/integrations/namecheapdns/
+#
+namecheapdns:
+  domain: !secret ddns_domain
+  host: !secret ddns_host
+  password: !secret ddns_password
