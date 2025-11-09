@@ -296,15 +296,6 @@
     action: mqtt.publish
   mode: queued
   max: 10
-- id: '1757765106375'
-  alias: Update Namecheap DDNS Every 10 Minutes
-  description: Automatically updates Namecheap DDNS periodically
-  triggers:
-  - minutes: /10
-    trigger: time_pattern
-  actions:
-  - action: shell_command.update_namecheap_ddns
-  mode: single
 - id: '1761918265815'
   alias: Boiler Mode Control (OFF/MAN/AUTO)
   description: Controls boiler mode based on MQTT, timer, and auto/manual input
