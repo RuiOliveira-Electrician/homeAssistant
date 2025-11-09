@@ -1,8 +1,8 @@
 ---
-# Add support for scenes
+# A scene entity is an entity that can restore the state of a group of entities.
+# This include is for the scene editor/UI
 #
 # https://www.home-assistant.io/integrations/scene/
 #
-# This include is for the scene editor/UI
 scene: !include ../scenes.yaml
 scene split: !include_dir_list ../scenes

@@ -1,6 +1,7 @@
 ---
-# This file load up my switches
-#
+# The Switch integration manages the state of the switch entities and allows you
+# to control them.
+# 
 # https://www.home-assistant.io/integrations/switch/
 #
 switch: !include_dir_list ../entities/switches
