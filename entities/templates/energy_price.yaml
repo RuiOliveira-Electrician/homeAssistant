@@ -1,0 +1,53 @@
+sensors:
+  current_energy_price_eur_kwh:
+    friendly_name: "Current Energy Price €/kWh"
+    unit_of_measurement: "€/kWh"
+    unique_id: "current_energy_price_eur_kwh"
+    value_template: >
+      {% set period = states('sensor.energy_price_hours') %}
+      {% if period == "lowPrice" %}
+        0.1162
+      {% else %}
+        0.1861
+      {% endif %}
+
+  actual_sell_energy_price_eur_kwh:
+    friendly_name: "Actual Sell Energy Price €/kWh"
+    unit_of_measurement: "€/kWh"
+    unique_id: "actual_sell_energy_price_eur_kwh"
+    value_template: >
+      0.04
+
+  electricity_dynamic_price_eur_kwh:
+    friendly_name: "Electricity Dynamic Price €/kWh"
+    unit_of_measurement: "€/kWh"
+    unique_id: "electricity_dynamic_price_eur_kwh"
+    value_template: >
+      {{ ((states('sensor.omie_spot_price_pt') | float(0)) * 0.001) | round(5) }}
+
+  g9_dynamic_tariff_eur_kwh:
+    friendly_name: "G9 Dynamic Tariff €/kWh"
+    unit_of_measurement: "€/kWh"
+    unique_id: "g9_dynamic_tariff_eur_kwh"
+    value_template: >
+      {% set omie = states('sensor.electricity_dynamic_price_eur_kwh') | float(0) %}
+      {% set fadeq = 1.02 %}
+      {% set losses = 0.02 %}
+      {% set ggs = 0.0015 %}
+      {% set mc = 0.001 %}
+      {{ (omie * fadeq * (1 + losses) + ggs + mc) | round(5) }}
+
+  g9_tariff_difference_eur_kwh:
+    friendly_name: "G9 Tariff Difference €/kWh"
+    unit_of_measurement: "€/kWh"
+    unique_id: "g9_tariff_difference_eur_kwh"
+    value_template: >
+      {% set g9_raw = states('sensor.g9_dynamic_tariff_eur_kwh') %}
+      {% set current_raw = states('sensor.current_energy_price_eur_kwh') %}
+      {% set g9 = g9_raw | float(none) %}
+      {% set current = current_raw | float(none) %}
+      {% if g9 is not none and current is not none %}
+        {{ (current - g9) | round(5) }}
+      {% else %}
+        unknown
+      {% endif %}

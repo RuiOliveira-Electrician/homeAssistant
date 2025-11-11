@@ -34,9 +34,9 @@
       sequence:
       - data:
           topic: Inverter/GridWatts
-          payload: "{{ \n  (states('sensor.power_meter_active_power') | float) * -1+\n
-            \ ((states('sensor.boiler_surplus_load') | float) - (states('input_number.memory_boiler_after_inverter_data_polling')
-            | float)) +\n  (states('input_number.boiler_adjustment_factor') | float)\n}}\n"
+          payload: "{{ \n  (states('sensor.power_meter_active_power') | float(0))
+            * -1 +\n  ((states('sensor.boiler_surplus_load') | float(0)) - \n  (states('input_number.memory_boiler_after_inverter_data_polling')
+            | float(0))) +\n  (states('input_number.boiler_adjustment_factor') | float(0))\n}}\n"
           qos: 1
           retain: true
         action: mqtt.publish
