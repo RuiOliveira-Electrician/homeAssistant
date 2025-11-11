@@ -12,18 +12,18 @@ substitutions:
   mqtt_user: !secret mqtt_username
   mqtt_password: !secret mqtt_password
 
-mqtt:
-  id: mqtt_client
-  broker: "${mqtt_broker}"
-  username: "${mqtt_user}"
-  password: "${mqtt_password}"
-  topic_prefix: esphome/${slug}
-  birth_message:
-    topic: esphome/${slug}/status
-    payload: 'online'
-  will_message:
-    topic: esphome/${slug}/status
-    payload: 'offline'
+#mqtt:
+#  id: mqtt_client
+#  broker: "${mqtt_broker}"
+#  username: "${mqtt_user}"
+#  password: "${mqtt_password}"
+#  topic_prefix: esphome/${slug}
+#  birth_message:
+#    topic: esphome/${slug}/status
+#    payload: 'online'
+#  will_message:
+#    topic: esphome/${slug}/status
+#    payload: 'offline'
   #on_message:
   #  - topic: esphome/${name}/deep_sleep_mode/ota_mode
   #    payload: 'on'

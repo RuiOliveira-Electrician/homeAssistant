@@ -1,0 +1,12 @@
+substitutions:
+  wifi_ap_password: "esphome-${slug}"
+
+wifi:
+  # reboot_timeout: 10min
+  manual_ip:
+    static_ip: "${wifi_static_ip}"
+    gateway: 192.168.1.1
+    subnet: 255.255.255.0
+  ap:
+    ssid: "${slug}"
+    password: "${wifi_ap_password}"

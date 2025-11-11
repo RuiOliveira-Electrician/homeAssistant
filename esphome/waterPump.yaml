@@ -2,13 +2,16 @@ substitutions:
   slug: water_pump
   device_id: 2
   description: Control of Water Pump!
-  wireguard_address: !secret esphome_wireguard_address_water_pump
-  wireguard_private_key: !secret esphome_wireguard_private_key_water_pump
+  wifi_static_ip: 192.168.1.103
+  #wireguard_address: !secret esphome_wireguard_address_water_pump
+  #wireguard_private_key: !secret esphome_wireguard_private_key_water_pump
 
 packages:
-  wifi_config: !include wifi_connection/wireguard.yaml
+  #wifi_config: !include wifi_connection/wireguard.yaml
+  wifi_config: !include wifi_connection/internalNetwork.yaml
   board: !include boards/wemos_d1_mini.yaml
   <<: !include_dir_named common
+  <<: !include_dir_named common_api
   
 # === GLOBAL VARIABLES ===
 globals:
@@ -83,7 +86,7 @@ sensor:
     device_class: power
     update_interval: 1s
     lambda: |-
-      if (id(contactor).state && id(sensor_pressure).state) {
+      if (id(contactor).state && !id(sensor_pressure).state) {
         return id(pump_power_w);
       } else {
         return 0.0;
@@ -96,7 +99,7 @@ sensor:
     unit_of_measurement: "s"
     update_interval: 1s
     lambda: |-
-      if (id(contactor).state && id(sensor_pressure).state) {
+      if (id(contactor).state && !id(sensor_pressure).state) {
         id(total_runtime_sec)++;
       }
       return id(total_runtime_sec);
@@ -108,7 +111,7 @@ sensor:
     unit_of_measurement: "s"
     update_interval: 1s
     lambda: |-
-      if (id(contactor).state && id(sensor_pressure).state) {
+      if (id(contactor).state && !id(sensor_pressure).state) {
         id(daily_runtime_sec)++;
       }
       return id(daily_runtime_sec);

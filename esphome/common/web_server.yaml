@@ -9,7 +9,7 @@
 # https://esphome.io/components/web_server.html
 #
 substitutions:
-  web_server_username: esphome
+  web_server_username: admin
   web_server_password: !secret esphome_web_server_password
 
 web_server:
