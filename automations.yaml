@@ -224,11 +224,11 @@
         state:
         - 'on'
       sequence:
-      - action: input_boolean.turn_on
+      - action: input_number.increment
         metadata: {}
         data: {}
         target:
-          entity_id: input_boolean.water_box_full
+          entity_id: input_number.water_box_runtime
     - conditions:
       - condition: trigger
         id: trigger_increment_runtime
@@ -245,11 +245,11 @@
           minutes: 0
           seconds: 30
       sequence:
-      - action: input_number.set_value
+      - action: input_boolean.turn_on
+        metadata: {}
+        data: {}
         target:
-          entity_id: input_number.water_box_runtime
-        data:
-          value: '{{ states(''input_number.water_box_time_factor'') | float(0) }}'
+          entity_id: input_boolean.water_box_full
     - conditions:
       - condition: trigger
         id: trigger_power_change
@@ -271,6 +271,10 @@
       - condition: numeric_state
         entity_id: input_number.water_box_runtime
         below: input_number.water_box_time_factor
+      - condition: state
+        entity_id: input_boolean.water_box_full
+        state:
+        - 'off'
       sequence:
       - target:
           entity_id: input_number.boiler_adjustment_factor
@@ -555,20 +559,29 @@
           - condition: numeric_state
             entity_id: sensor.boiler_heater_temperature
             below: input_number.boiler_man_temperature
-          - condition: or
+          - condition: and
             conditions:
-            - condition: and
-              conditions:
-              - condition: state
-                entity_id: sensor.energy_price_hours
-                state: lowPrice
-              - condition: state
-                entity_id: sensor.inverter_inverter_state
-                state: Standby
+            - condition: state
+              entity_id: sensor.energy_price_hours
+              state: lowPrice
             - condition: state
               entity_id: sensor.inverter_inverter_state
-              state: unavailable
-              enabled: false
+              state: Standby
+            - condition: or
+              conditions:
+              - condition: state
+                entity_id: input_boolean.boiler_control_by_solar_forecast
+                state:
+                - 'off'
+              - condition: and
+                conditions:
+                - condition: state
+                  entity_id: input_boolean.boiler_control_by_solar_forecast
+                  state:
+                  - 'on'
+                - condition: numeric_state
+                  entity_id: sensor.energy_production_tomorrow
+                  above: 5
         enabled: true
       sequence:
       - action: select.select_option
