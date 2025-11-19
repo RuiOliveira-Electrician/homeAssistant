@@ -19,9 +19,9 @@ wireguard:
 binary_sensor:
 - platform: wireguard
   status:
-    name: "WireGuard Status #${device_id}"
+    name: "WireGuard Status"
 
 sensor:
   - platform: wireguard
     latest_handshake:
-      name: 'WireGuard Latest Handshake #${device_id}'
+      name: 'WireGuard Latest Handshake'

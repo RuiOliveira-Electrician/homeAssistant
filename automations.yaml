@@ -174,85 +174,210 @@
   max: 10
 - id: '1739920466122'
   alias: Manage Water Box Runtime & Activation
-  description: Controls water box runtime and activation logic
+  description: Controls water box runtime, activation logic, and pump mode
   triggers:
-  - minutes: /1
+  - trigger: time_pattern
+    minutes: /1
     id: trigger_increment_runtime
-    trigger: time_pattern
-  - at: 00:00:00
+  - trigger: time
+    at: 00:00:00
     id: trigger_reset_runtime
-    trigger: time
-  - entity_id:
+  - trigger: state
+    entity_id:
     - sensor.power_meter_active_power
     - sensor.inverter_active_power
+    - switch.boiler_relay_1
+    - select.water_pump_mode
+    - input_number.boiler_adjustment_factor
+    - input_boolean.boiler_adjustment_added
+    - input_boolean.water_box_control_auto
     id: trigger_power_change
-    trigger: state
+  - trigger: state
+    entity_id:
+    - input_boolean.water_box_forced_man
+    id: forced_man
   actions:
   - choose:
     - conditions:
       - condition: trigger
         id: trigger_reset_runtime
       sequence:
-      - data:
+      - target:
+          entity_id: input_number.water_box_runtime
+        data:
           value: 0
         action: input_number.set_value
-        target:
-          entity_id:
-          - input_number.water_box_runtime
     - conditions:
       - condition: trigger
         id: trigger_increment_runtime
       - condition: state
+        entity_id: binary_sensor.water_pump_running
+        state:
+        - 'on'
+      - condition: state
         entity_id: switch.boiler_relay_1
-        state: 'on'
+        state:
+        - 'on'
       sequence:
-      - action: input_number.increment
-        target:
+      - target:
           entity_id: input_number.water_box_runtime
+        action: input_number.increment
+        data: {}
     - conditions:
       - condition: trigger
         id: trigger_power_change
       - condition: state
-        entity_id: switch.boiler_relay_1
-        state: 'off'
-      - condition: state
-        entity_id: input_boolean.boiler_control_auto
+        entity_id: input_boolean.water_box_control_auto
         state: 'on'
+      - condition: state
+        entity_id: input_boolean.water_box_forced_man
+        state:
+        - 'off'
+      - condition: state
+        entity_id: input_boolean.boiler_adjustment_added
+        state:
+        - 'off'
       - condition: numeric_state
         entity_id: sensor.inverter_active_power
-        above: 1400
+        above: number.water_pump_power
+        enabled: true
       - condition: numeric_state
         entity_id: input_number.water_box_runtime
         below: input_number.water_box_time_factor
       sequence:
-      - entity_id: switch.boiler_relay_1
+      - target:
+          entity_id: input_number.boiler_adjustment_factor
+        data:
+          value: "{{\n  (states('input_number.boiler_adjustment_factor') | float(0))\n
+            \ + (states('number.water_pump_power') | float(0))\n}}\n"
+        action: input_number.set_value
+        enabled: true
+      - target:
+          entity_id: input_boolean.boiler_adjustment_added
+        action: input_boolean.turn_on
+        data: {}
+        enabled: true
+    - conditions:
+      - condition: trigger
+        id:
+        - trigger_power_change
+      - condition: state
+        entity_id: input_boolean.water_box_control_auto
+        state: 'on'
+      - condition: state
+        entity_id: switch.boiler_relay_1
+        state: 'off'
+      - condition: state
+        entity_id: input_boolean.boiler_adjustment_added
+        state:
+        - 'on'
+      - condition: numeric_state
+        entity_id: sensor.power_meter_active_power
+        above: 0
+        enabled: true
+      sequence:
+      - target:
+          entity_id: switch.boiler_relay_1
         action: switch.turn_on
-      - action: switch.turn_on
-        target:
-          entity_id: switch.water_pump_contactor_2
+        data: {}
+        enabled: true
+      - target:
+          entity_id:
+          - select.water_pump_mode
+        data:
+          option: AUTO
+        action: select.select_option
+        enabled: true
     - conditions:
       - condition: trigger
         id: trigger_power_change
-      - condition: state
-        entity_id: switch.boiler_relay_1
-        state: 'on'
-      - condition: state
-        entity_id: input_boolean.boiler_control_auto
-        state: 'on'
       - condition: or
         conditions:
-        - condition: numeric_state
-          entity_id: sensor.inverter_active_power
-          below: 1400
-        - condition: numeric_state
-          entity_id: input_number.water_box_runtime
-          above: input_number.water_box_time_factor
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: switch.boiler_relay_1
+            state:
+            - 'on'
+          - condition: state
+            entity_id: input_boolean.boiler_adjustment_added
+            state:
+            - 'off'
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: input_boolean.boiler_adjustment_added
+            state: 'on'
+          - condition: or
+            conditions:
+            - condition: state
+              entity_id: input_boolean.water_box_control_auto
+              state:
+              - 'off'
+            - condition: numeric_state
+              entity_id: sensor.inverter_active_power
+              below: number.water_pump_power
+              enabled: true
+            - condition: numeric_state
+              entity_id: input_number.water_box_runtime
+              above: input_number.water_box_time_factor
+              enabled: true
+        enabled: true
       sequence:
-      - entity_id: switch.boiler_relay_1
+      - target:
+          entity_id: switch.boiler_relay_1
         action: switch.turn_off
-      - action: switch.turn_off
+        data: {}
+        enabled: true
+      - target:
+          entity_id:
+          - select.water_pump_mode
+        data:
+          option: 'OFF'
+        action: select.select_option
+        enabled: true
+      - target:
+          entity_id: input_number.boiler_adjustment_factor
+        data:
+          value: "{{\n  (states('input_number.boiler_adjustment_factor') | float(0))\n
+            \ - (states('number.water_pump_power') | float(0))\n}}\n"
+        action: input_number.set_value
+        enabled: true
+      - target:
+          entity_id: input_boolean.boiler_adjustment_added
+        action: input_boolean.turn_off
+        data: {}
+        enabled: true
+    - conditions:
+      - condition: trigger
+        id:
+        - forced_man
+      - condition: state
+        entity_id: input_boolean.water_box_forced_man
+        state:
+        - 'on'
+      sequence:
+      - action: select.select_option
+        metadata: {}
+        data:
+          option: MAN
         target:
-          entity_id: switch.water_pump_contactor_2
+          entity_id: select.water_pump_mode
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.water_box_forced_man
+        state:
+        - 'off'
+      - condition: trigger
+        id:
+        - forced_man
+      sequence:
+      - action: select.select_option
+        metadata: {}
+        data:
+          option: 'OFF'
+        target:
+          entity_id: select.water_pump_mode
   mode: single
 - id: '1741732744615'
   alias: MQTT Troubleshooting - Inverter Diagnostics

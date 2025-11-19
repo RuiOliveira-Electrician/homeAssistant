@@ -7,7 +7,7 @@
 # https://esphome.io/components/sensor/wifi_signal.html
 #
 platform: wifi_signal
-name: "WiFi Signal dB #${device_id}"
+name: "WiFi Signal dB"
 id: wifi_signal_db
 update_interval: 60s
 entity_category: "diagnostic"

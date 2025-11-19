@@ -1,0 +1,50 @@
+# diagnostic_display_errors.yaml
+globals:
+  - id: last_ha_update
+    type: unsigned long
+    restore_value: false
+    initial_value: '0'
+
+  - id: error_state
+    type: std::string
+    restore_value: false
+    initial_value: ""
+
+  - id: error_flag
+    type: bool
+    restore_value: false
+    initial_value: 'false'
+
+text_sensor:
+  - platform: template
+    id: diag_error
+    name: "Error Type"
+    icon: mdi:alert-circle-outline
+    entity_category: diagnostic
+    update_interval: never
+    lambda: |-
+      return id(error_state);
+
+binary_sensor:
+  - platform: template
+    id: diag_error_flag
+    name: "Error"
+    icon: mdi:alert
+    entity_category: diagnostic
+    device_class: problem
+    lambda: |-
+      return id(error_flag);
+
+interval:
+  - interval: 2s
+    then:
+      - lambda: |-
+          bool ha_timeout = (millis() - id(last_ha_update) > 20000);
+
+          if (ha_timeout) {
+            id(error_state) = "HA Timeout > 20s";
+            id(error_flag) = true;
+          } else {
+            id(error_state) = "OK";
+            id(error_flag) = false;
+          }

@@ -1,46 +1,54 @@
 substitutions:
   slug: water_pump
-  device_id: 2
-  description: Control of Water Pump!
+  description: "Control of Water Pump!"
   wifi_static_ip: 192.168.1.103
-  #wireguard_address: !secret esphome_wireguard_address_water_pump
-  #wireguard_private_key: !secret esphome_wireguard_private_key_water_pump
 
 packages:
-  #wifi_config: !include wifi_connection/wireguard.yaml
   wifi_config: !include wifi_connection/internalNetwork.yaml
+
+    # === TWO TRACKERS ===
+  tracker: !include
+    file: sensors/templates/energy_template.yaml
+    vars:
+      tracker_id: tracker
+      tracker_name: "Global"
+
+  tracker_man: !include
+    file: sensors/templates/energy_template.yaml
+    vars:
+      tracker_id: tracker_man
+      tracker_name: "MAN"
+
+  tracker_auto: !include
+    file: sensors/templates/energy_template.yaml
+    vars:
+      tracker_id: tracker_auto
+      tracker_name: "AUTO"
   board: !include boards/wemos_d1_mini.yaml
   <<: !include_dir_named common
   <<: !include_dir_named common_api
-  
+
+
+
 # === GLOBAL VARIABLES ===
 globals:
-  - id: total_runtime_sec
-    type: unsigned long
-    restore_value: true
-    initial_value: '0'
-  - id: daily_runtime_sec
-    type: unsigned long
-    restore_value: true
-    initial_value: '0'
-  - id: total_consumption_kwh
-    type: float
-    restore_value: true
-    initial_value: '0.0'
-  - id: daily_consumption_kwh
-    type: float
-    restore_value: true
-    initial_value: '0.0'
-  - id: last_runtime_sec
-    type: unsigned long
-    restore_value: true
-    initial_value: '0'
-  - id: pump_power_w
-    type: float
-    restore_value: true
-    initial_value: '1200.0'
+  - { id: mode_state, type: int, restore_value: true, initial_value: '0' }
+  - id: daily_reset
+    type: bool
+    restore_value: false
+    initial_value: 'false'
 
-# === TIME FOR DAILY RESET ===
+
+esphome:
+  on_boot:
+    priority: 800
+    then:
+      - lambda: |-
+          // Restaurar valor do power para o número da UI
+          id(pump_power).publish_state(id(tracker_power_w));
+
+          ESP_LOGI("boot", "Restored Power: %.1fW", id(tracker_power_w));
+
 time:
   - platform: sntp
     id: ntp_time
@@ -51,99 +59,134 @@ time:
         hours: 0
         then:
           - lambda: |-
-              id(daily_runtime_sec) = 0;
-              id(daily_consumption_kwh) = 0.0;
+              id(daily_reset) = true;
 
-# === SWITCH TO CONTROL WATER PUMP ===
+# === MODE SELECTOR ===
+select:
+  - platform: template
+    name: "Mode"
+    id: select_mode
+    optimistic: true
+    restore_value: true
+    options: ["OFF", "MAN", "AUTO"]
+    initial_option: "OFF"
+    set_action:
+      - lambda: |-
+          if (x == "OFF") id(mode_state) = 0;
+          else if (x == "MAN") id(mode_state) = 1;
+          else if (x == "AUTO") id(mode_state) = 2;
+          ESP_LOGI("mode", "Mode set to %s", x.c_str());
+
+# === OUTPUT ===
 switch:
   - platform: gpio
-    pin:
-      number: D1
-    name: "Contactor #${device_id}"
     id: contactor
-    icon: "mdi:water-pump"
+    pin: D1
+    internal: true
     restore_mode: RESTORE_DEFAULT_OFF
 
 # === PRESSURE SENSOR ===
 binary_sensor:
   - platform: gpio
     id: sensor_pressure
-    name: "Pressure Sensor #${device_id}"
-    pin:
-      number: D2
-      mode: INPUT
-      inverted: false
+    name: "Pressure Sensor"
+    pin: D2
     filters:
       - delayed_on: 200ms
       - delayed_off: 200ms
 
+  - platform: template
+    name: "Running"
+    id: running
+    device_class: power
+    lambda: |-
+      return id(tracker_active);
+
+# === CONFIGURABLE PUMP POWER ===
+number:
+  - platform: template
+    name: "Power"
+    id: pump_power
+    icon: "mdi:flash"
+    entity_category: config
+    unit_of_measurement: "W"
+    min_value: 0
+    max_value: 5000
+    step: 10
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: |-
+          id(tracker_power_w) = x;
+          id(tracker_man_power_w) = x;
+          id(tracker_auto_power_w) = x;
+          ESP_LOGI("pump", "Pump Power set to %.1f W", x);
+
 # === SENSORS ===
 sensor:
-  # Instantaneous Pump Power (W)
-  - platform: template
-    name: "Power #${device_id}"
+  - platform: homeassistant
+    id: sensor_inverter_active_power
+    entity_id: sensor.inverter_active_power
     unit_of_measurement: "W"
-    device_class: power
-    update_interval: 1s
-    lambda: |-
-      if (id(contactor).state && !id(sensor_pressure).state) {
-        return id(pump_power_w);
-      } else {
-        return 0.0;
-      }
+    on_value:
+      then:
+        - lambda: |-
+            id(last_ha_update) = millis();
 
-  # Total Runtime in seconds
-  - platform: template
-    name: "Total Runtime #${device_id}"
-    id: sensor_total_runtime
-    unit_of_measurement: "s"
-    update_interval: 1s
-    lambda: |-
-      if (id(contactor).state && !id(sensor_pressure).state) {
-        id(total_runtime_sec)++;
-      }
-      return id(total_runtime_sec);
+  - platform: homeassistant
+    id: sensor_power_meter_active_power
+    entity_id: sensor.power_meter_active_power
+    unit_of_measurement: "W"
+    on_value:
+      then:
+        - lambda: |-
+            id(last_ha_update) = millis();
 
-  # Daily Runtime in seconds
-  - platform: template
-    name: "Daily Runtime #${device_id}"
-    id: sensor_daily_runtime
-    unit_of_measurement: "s"
-    update_interval: 1s
-    lambda: |-
-      if (id(contactor).state && !id(sensor_pressure).state) {
-        id(daily_runtime_sec)++;
-      }
-      return id(daily_runtime_sec);
+interval:
+  - interval: 2s
+    then:
+      - lambda: |-
+          // ====== UPDATE PUMP ACTIVE STATE ======
+          id(tracker_active) = id(contactor).state && !id(sensor_pressure).state;
+          id(tracker_man_active) = id(tracker_active) && (id(mode_state) == 1);
+          id(tracker_auto_active) = id(tracker_active) && (id(mode_state) == 2);          
 
-  # Total Energy in kWh
-  - platform: template
-    name: "Energy (Total) #${device_id}"
-    id: sensor_total_energy
-    unit_of_measurement: "kWh"
-    device_class: energy
-    state_class: total_increasing
-    accuracy_decimals: 3
-    update_interval: 1s
-    lambda: |-
-      unsigned long runtime_sec = id(total_runtime_sec);
-      if (runtime_sec > id(last_runtime_sec)) {
-        unsigned long delta_sec = runtime_sec - id(last_runtime_sec);
-        float delta_kwh = (id(pump_power_w) * delta_sec) / (1000.0 * 3600.0);
-        id(total_consumption_kwh) += delta_kwh;
-        id(daily_consumption_kwh) += delta_kwh;
-        id(last_runtime_sec) = runtime_sec;
-      }
-      return id(total_consumption_kwh);
 
-  # Daily Energy in kWh
-  - platform: template
-    name: "Energy (Today) #${device_id}"
-    id: sensor_daily_energy
-    unit_of_measurement: "kWh"
-    device_class: energy
-    state_class: total_increasing
-    accuracy_decimals: 3
-    update_interval: 1s
-    lambda: |-
-      return id(daily_consumption_kwh);
+          float available_power = id(sensor_power_meter_active_power).state;
+          float pump_required_power = id(tracker_power_w) + 5;
+
+          // ====== SAFETY CHECK ======
+          if (id(error_flag) && id(mode_state) != 1) {
+              if (id(contactor).state) {
+                  id(contactor).turn_off();
+                  ESP_LOGW("safety", "HA Timeout → Pump OFF (safety mode)");
+              }
+          }
+
+          // ====== MODE CONTROL ======
+          switch (id(mode_state)) {
+              case 0: // OFF
+                  if (id(contactor).state) {
+                      id(contactor).turn_off();
+                      ESP_LOGI("mode", "OFF → Pump OFF");
+                  }
+                  break;
+
+              case 1: // MANUAL
+                  if (!id(tracker_active)) {   // <-- FIXED: added closing parenthesis
+                      id(contactor).turn_on();
+                      ESP_LOGI("mode", "MAN → Pump ON via Manual Tracker");
+                  }
+                  break;
+
+              case 2: // AUTO
+                  // Hysteresis to avoid rapid ON/OFF
+                  if (available_power > pump_required_power && !id(tracker_active)) {
+                      id(contactor).turn_on();
+                      ESP_LOGI("mode", "AUTO → Available %.1fW > Pump %.1fW → Pump ON", available_power, pump_required_power);
+                  } else if ((available_power <= 0 && id(tracker_active))) {
+                      id(contactor).turn_off();
+                      ESP_LOGI("mode", "AUTO → Available %.1fW ≤ Pump %.1fW → Pump OFF", available_power, pump_required_power);
+                  }
+                  break;
+          }

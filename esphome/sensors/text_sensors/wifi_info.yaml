@@ -7,18 +7,18 @@
 #
 platform: wifi_info
 ip_address:
-  name: "WiFi IP Address #${device_id}"
+  name: "WiFi IP Address"
   id: sensor_ip_address
   entity_category: "diagnostic"
 ssid:
-  name: "WiFi SSID #${device_id}"
+  name: "WiFi SSID"
   id: sensor_ssid
   entity_category: "diagnostic"
 bssid:
-  name: "WiFi BSSID #${device_id}"
+  name: "WiFi BSSID"
   id: sensor_bssid
   entity_category: "diagnostic"
 mac_address:
-  name: "WiFi MAC Address #${device_id}"
+  name: "WiFi MAC Address"
   id: sensor_mac_address
   entity_category: "diagnostic"

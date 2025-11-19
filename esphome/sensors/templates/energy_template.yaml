@@ -1,0 +1,99 @@
+# Optional defaults block
+defaults:
+  tracker_id: unknown
+  tracker_name: "Unknown Device"
+
+globals:
+  - id: ${tracker_id}_total_runtime_sec
+    type: unsigned long
+    restore_value: true
+    initial_value: '0'
+  - id: ${tracker_id}_daily_runtime_sec
+    type: unsigned long
+    restore_value: true
+    initial_value: '0'
+  - id: ${tracker_id}_total_consumption_kwh
+    type: float
+    restore_value: true
+    initial_value: '0.0'
+  - id: ${tracker_id}_daily_consumption_kwh
+    type: float
+    restore_value: true
+    initial_value: '0.0'
+  - id: ${tracker_id}_last_runtime_sec
+    type: unsigned long
+    restore_value: true
+    initial_value: '0'
+  - id: ${tracker_id}_power_w
+    type: float
+    restore_value: true
+    initial_value: '0'
+  - id: ${tracker_id}_active
+    type: bool
+    restore_value: false
+    initial_value: 'false'
+
+sensor:
+  # Runtime sensors are now internal (hidden)
+  - platform: template
+    name: "Total ${tracker_name} Runtime"
+    internal: true
+    unit_of_measurement: "s"
+    update_interval: 1s
+    lambda: |-
+      if (id(${tracker_id}_active)) id(${tracker_id}_total_runtime_sec)++;
+      return id(${tracker_id}_total_runtime_sec);
+
+  - platform: template
+    name: "Daily ${tracker_name} Runtime"
+    internal: true
+    unit_of_measurement: "s"
+    update_interval: 1s
+    lambda: |-
+      if (id(daily_reset)) id(${tracker_id}_daily_runtime_sec) = 0;
+      if (id(${tracker_id}_active)) id(${tracker_id}_daily_runtime_sec)++;
+      return id(${tracker_id}_daily_runtime_sec);
+
+  # Energy sensors
+  - platform: template
+    name: "Energy ${tracker_name} (Total)"
+    unit_of_measurement: "kWh"
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 3
+    update_interval: 1s
+    lambda: |-
+      auto runtime = id(${tracker_id}_total_runtime_sec);
+      if (runtime > id(${tracker_id}_last_runtime_sec)) {
+        float delta_kwh = (id(${tracker_id}_power_w) * (runtime - id(${tracker_id}_last_runtime_sec))) / 3600000.0;
+        id(${tracker_id}_total_consumption_kwh) += delta_kwh;
+        id(${tracker_id}_daily_consumption_kwh) += delta_kwh;
+        id(${tracker_id}_last_runtime_sec) = runtime;
+      }
+      return id(${tracker_id}_total_consumption_kwh);
+
+  - platform: template
+    name: "Energy ${tracker_name} (Today)"
+    unit_of_measurement: "kWh"
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 3
+    update_interval: 1s
+    lambda: |-
+      if (id(daily_reset)) id(${tracker_id}_daily_consumption_kwh) = 0.0;
+      return id(${tracker_id}_daily_consumption_kwh);
+
+  # Power sensor
+  - platform: template
+    name: "Power ${tracker_name} "
+    unit_of_measurement: "W"
+    device_class: power
+    update_interval: 1s
+    lambda: |-
+      return (id(${tracker_id}_active)) ? id(${tracker_id}_power_w) : 0.0;
+
+interval:
+  - interval: 1s
+    then:
+      - lambda: |-
+          if (id(daily_reset)) id(daily_reset) = false;
