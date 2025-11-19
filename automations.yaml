@@ -194,7 +194,7 @@
     id: trigger_power_change
   - trigger: state
     entity_id:
-    - input_boolean.water_box_forced_man
+    - input_boolean.water_pump_forced_man
     id: forced_man
   actions:
   - choose:
@@ -257,7 +257,7 @@
         entity_id: input_boolean.water_box_control_auto
         state: 'on'
       - condition: state
-        entity_id: input_boolean.water_box_forced_man
+        entity_id: input_boolean.water_pump_forced_man
         state:
         - 'off'
       - condition: state
@@ -390,7 +390,7 @@
         id:
         - forced_man
       - condition: state
-        entity_id: input_boolean.water_box_forced_man
+        entity_id: input_boolean.water_pump_forced_man
         state:
         - 'on'
       sequence:
@@ -402,7 +402,7 @@
           entity_id: select.water_pump_mode
     - conditions:
       - condition: state
-        entity_id: input_boolean.water_box_forced_man
+        entity_id: input_boolean.water_pump_forced_man
         state:
         - 'off'
       - condition: trigger
