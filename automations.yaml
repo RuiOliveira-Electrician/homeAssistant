@@ -225,6 +225,27 @@
         data: {}
     - conditions:
       - condition: trigger
+        id: trigger_increment_runtime
+      - condition: state
+        entity_id: switch.boiler_relay_1
+        state:
+        - 'on'
+      - condition: state
+        entity_id: binary_sensor.water_pump_running
+        state:
+        - 'off'
+        for:
+          hours: 0
+          minutes: 0
+          seconds: 30
+      sequence:
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.water_box_runtime
+        data:
+          value: '{{ states(''input_number.water_box_time_factor'') | float(0) }}'
+    - conditions:
+      - condition: trigger
         id: trigger_power_change
       - condition: state
         entity_id: input_boolean.water_box_control_auto
@@ -322,6 +343,17 @@
               entity_id: input_number.water_box_runtime
               above: input_number.water_box_time_factor
               enabled: true
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: switch.boiler_relay_1
+            state:
+            - 'on'
+          - condition: template
+            value_template: '{{ states(''input_number.water_box_runtime'') | float(0)
+              >= states(''input_number.water_box_time_factor'') | float(0) }}
+
+              '
         enabled: true
       sequence:
       - target:
