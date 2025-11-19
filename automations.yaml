@@ -46,22 +46,22 @@
       sequence:
       - data:
           topic: Inverter/GridWatts
-          payload: "{{\n  (states('sensor.power_meter_active_power') | float) * -1
-            +\n  (states('input_number.boiler_adjustment_factor') | float)\n}}\n"
+          payload: "{{\n  (states('sensor.power_meter_active_power') | float(0)) *
+            -1 +\n  (states('input_number.boiler_adjustment_factor') | float(0))\n}}\n"
           qos: 1
           retain: true
         action: mqtt.publish
       - data:
           topic: Inverter/MPPT1_Watts
-          payload: "{{\n  (states('sensor.inverter_pv_1_voltage') | float) *\n  (states('sensor.inverter_pv_1_current')
-            | float)\n}}\n"
+          payload: "{{\n  (states('sensor.inverter_pv_1_voltage') | float(0)) *\n
+            \ (states('sensor.inverter_pv_1_current') | float(0))\n}}\n"
           qos: 1
           retain: true
         action: mqtt.publish
       - data:
           topic: Inverter/MPPT2_Watts
-          payload: "{{\n  (states('sensor.inverter_pv_2_voltage') | float) *\n  (states('sensor.inverter_pv_2_current')
-            | float)\n}}\n"
+          payload: "{{\n  (states('sensor.inverter_pv_2_voltage') | float(0)) *\n
+            \ (states('sensor.inverter_pv_2_current') | float(0))\n}}\n"
           qos: 1
           retain: true
         action: mqtt.publish
