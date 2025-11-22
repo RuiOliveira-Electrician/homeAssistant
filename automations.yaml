@@ -237,13 +237,13 @@
         state:
         - 'on'
       - condition: state
-        entity_id: binary_sensor.water_pump_running
+        entity_id: binary_sensor.water_pump_pressure_sensor
         state:
-        - 'off'
+        - 'on'
         for:
           hours: 0
-          minutes: 0
-          seconds: 30
+          minutes: 1
+          seconds: 0
       sequence:
       - action: input_boolean.turn_on
         metadata: {}
@@ -579,9 +579,24 @@
                   entity_id: input_boolean.boiler_control_by_solar_forecast
                   state:
                   - 'on'
-                - condition: numeric_state
-                  entity_id: sensor.energy_production_tomorrow
-                  above: 5
+                - condition: or
+                  conditions:
+                  - condition: and
+                    conditions:
+                    - condition: numeric_state
+                      entity_id: sensor.solar_production_forecast_estimated_energy_production_today
+                      below: 5
+                    - condition: time
+                      after: 00:30:00
+                      before: '12:00:00'
+                  - condition: and
+                    conditions:
+                    - condition: numeric_state
+                      entity_id: sensor.solar_production_forecast_estimated_energy_production_tomorrow
+                      below: 5
+                    - condition: time
+                      after: '12:00:00'
+                      before: '23:59:59'
         enabled: true
       sequence:
       - action: select.select_option
