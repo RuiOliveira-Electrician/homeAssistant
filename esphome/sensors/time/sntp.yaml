@@ -12,3 +12,10 @@ servers:
   - 0.pool.ntp.org
   - 1.pool.ntp.org
   - 2.pool.ntp.org
+on_time:
+  - seconds: 0
+    minutes: 0
+    hours: 0
+    then:
+      - lambda: |-
+          id(daily_reset) = true;

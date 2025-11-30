@@ -33,10 +33,7 @@ packages:
 # === GLOBAL VARIABLES ===
 globals:
   - { id: mode_state, type: int, restore_value: true, initial_value: '0' }
-  - id: daily_reset
-    type: bool
-    restore_value: false
-    initial_value: 'false'
+
 
 
 esphome:
@@ -49,17 +46,6 @@ esphome:
 
           ESP_LOGI("boot", "Restored Power: %.1fW", id(tracker_power_w));
 
-time:
-  - platform: sntp
-    id: ntp_time
-    timezone: "Europe/Lisbon"
-    on_time:
-      - seconds: 0
-        minutes: 0
-        hours: 0
-        then:
-          - lambda: |-
-              id(daily_reset) = true;
 
 # === MODE SELECTOR ===
 select:

@@ -14,6 +14,7 @@ wifi:
   id: component_wifi
   ssid: "${wifi_ssid}"
   password: "${wifi_password}"
+  min_auth_mode: WPA2
  # reboot_timeout: 10min
 #  manual_ip:
 #    static_ip: "${wifi_static_ip}"
