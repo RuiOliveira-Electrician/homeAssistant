@@ -1,0 +1,17 @@
+binary_sensor:
+  - name: "Low Solar Forecast Condition"
+    state: >-
+      {% set today = states('sensor.solar_production_forecast_estimated_energy_production_today') | float(0) %}
+      {% set tomorrow = states('sensor.solar_production_forecast_estimated_energy_production_tomorrow') | float(0) %}
+      {% set remaining_today = states('sensor.solar_production_forecast_estimated_energy_production_remaining_today') | float(0) %}
+      {% set solar_threshold = states('input_number.solar_threshold') | float(0) %}
+
+      {% if remaining_today == 0 %}
+        {{ tomorrow < solar_threshold }}
+
+      {% elif remaining_today > 0 %}
+        {{ today < solar_threshold }}
+
+      {% else %}
+        false
+      {% endif %}

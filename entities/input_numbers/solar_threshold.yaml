@@ -1,0 +1,7 @@
+---
+name: Solar Threshold
+min: 0
+max: 50
+step: 1
+unit_of_measurement: kWh
+icon: mdi:white-balance-sunny
