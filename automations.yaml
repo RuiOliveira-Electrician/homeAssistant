@@ -195,6 +195,7 @@
   - trigger: state
     entity_id:
     - input_boolean.water_pump_forced_man
+    - binary_sensor.water_pump_forced_man_online
     id: forced_man
   actions:
   - choose:
@@ -393,10 +394,16 @@
       - condition: trigger
         id:
         - forced_man
-      - condition: state
-        entity_id: input_boolean.water_pump_forced_man
-        state:
-        - 'on'
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: input_boolean.water_pump_forced_man
+          state:
+          - 'on'
+        - condition: state
+          entity_id: binary_sensor.water_pump_forced_man_online
+          state:
+          - 'on'
       sequence:
       - action: select.select_option
         metadata: {}
@@ -405,13 +412,19 @@
         target:
           entity_id: select.water_pump_mode
     - conditions:
-      - condition: state
-        entity_id: input_boolean.water_pump_forced_man
-        state:
-        - 'off'
       - condition: trigger
         id:
         - forced_man
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: input_boolean.water_pump_forced_man
+          state:
+          - 'off'
+        - condition: state
+          entity_id: binary_sensor.water_pump_forced_man_online
+          state:
+          - 'off'
       sequence:
       - action: select.select_option
         metadata: {}

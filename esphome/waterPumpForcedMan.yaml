@@ -1,0 +1,58 @@
+substitutions:
+  slug: water_pump_forced_man
+  description: "Control of Water Pump Manual!"
+  wifi_static_ip: 192.168.1.104
+
+packages:
+  wifi_config: !include wifi_connection/internalNetwork.yaml
+  board: !include boards/wemos_d1_mini.yaml
+  <<: !include_dir_named common
+  <<: !include_dir_named common_api
+
+output:
+  - platform: gpio
+    pin:
+      number: D4
+      inverted: true
+    id: built_in_led
+
+light:
+  - platform: binary
+    id: built_in_status_light
+    output: built_in_led
+    name: "Built-in LED"
+
+binary_sensor:
+  - platform: homeassistant
+    entity_id: binary_sensor.water_pump_pressure_sensor
+    id: water_pump_pressure_sensor
+
+  - platform: homeassistant
+    entity_id: binary_sensor.water_pump_running
+    id: water_pump_running
+
+interval:
+  - interval: 1s
+    then:
+      - if:
+          condition:
+            not:
+              wifi.connected:
+          then:
+            - light.toggle: built_in_status_light
+
+  - interval: 1s
+    then:
+      - if:
+          condition:
+            wifi.connected:
+          then:
+            - if:
+                condition:
+                  or:
+                    - binary_sensor.is_on: water_pump_pressure_sensor
+                    - binary_sensor.is_on: water_pump_running
+                then:
+                  - light.turn_on: built_in_status_light
+                else:
+                  - light.turn_off: built_in_status_light
