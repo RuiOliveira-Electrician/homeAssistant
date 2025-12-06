@@ -194,8 +194,7 @@
     id: trigger_power_change
   - trigger: state
     entity_id:
-    - input_boolean.water_pump_forced_man
-    - binary_sensor.water_pump_forced_man_online
+    - binary_sensor.eletrical_bord_water_pump_switch_man
     id: forced_man
   actions:
   - choose:
@@ -394,16 +393,10 @@
       - condition: trigger
         id:
         - forced_man
-      - condition: or
-        conditions:
-        - condition: state
-          entity_id: input_boolean.water_pump_forced_man
-          state:
-          - 'on'
-        - condition: state
-          entity_id: binary_sensor.water_pump_forced_man_online
-          state:
-          - 'on'
+      - condition: state
+        entity_id: binary_sensor.eletrical_bord_water_pump_switch_man
+        state:
+        - 'on'
       sequence:
       - action: select.select_option
         metadata: {}
@@ -415,16 +408,10 @@
       - condition: trigger
         id:
         - forced_man
-      - condition: or
-        conditions:
-        - condition: state
-          entity_id: input_boolean.water_pump_forced_man
-          state:
-          - 'off'
-        - condition: state
-          entity_id: binary_sensor.water_pump_forced_man_online
-          state:
-          - 'off'
+      - condition: state
+        entity_id: binary_sensor.eletrical_bord_water_pump_switch_man
+        state:
+        - 'off'
       sequence:
       - action: select.select_option
         metadata: {}

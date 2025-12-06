@@ -1,0 +1,89 @@
+substitutions:
+  slug: eletrical_bord
+  description: "Control of Water Pump Manual, Gate and DoorBell!"
+  wifi_static_ip: 192.168.1.104
+
+packages:
+  wifi_config: !include wifi_connection/internalNetwork.yaml
+  board: !include boards/wemos_d1_mini.yaml
+  <<: !include_dir_named common
+  <<: !include_dir_named common_api
+
+output:
+  - platform: gpio
+    pin:
+      number: D4
+      inverted: true
+    id: built_in_led
+
+light:
+  - platform: binary
+    id: built_in_status_light
+    output: built_in_led
+    internal: true
+
+binary_sensor:
+  # -------- Existing HomeAssistant Sensors --------
+  - platform: homeassistant
+    entity_id: binary_sensor.water_pump_pressure_sensor
+    id: water_pump_pressure_sensor
+
+  - platform: homeassistant
+    entity_id: binary_sensor.water_pump_running
+    id: water_pump_running
+
+  # -------- NEW: Water Pump Physical Switch --------
+  - platform: gpio
+    pin:
+      number: D5
+      mode: INPUT_PULLUP
+    name: "Water Pump Switch Man"
+    id: water_pump_switch_man
+
+interval:
+  - interval: 1s
+    then:
+      - if:
+          condition:
+            not:
+              wifi.connected:
+          then:
+            - light.toggle: built_in_status_light
+
+  - interval: 1s
+    then:
+      - if:
+          condition:
+            wifi.connected:
+          then:
+            - if:
+                condition:
+                  and:
+                    - or:
+                        - binary_sensor.is_on: water_pump_pressure_sensor
+                        - binary_sensor.is_on: water_pump_running
+                    - binary_sensor.is_on: water_pump_switch_man
+                then:
+                  - light.turn_on: built_in_status_light
+                else:
+                  - light.turn_off: built_in_status_light
+
+switch:
+  # -------- Gate Relay (momentary) --------
+  - platform: gpio
+    pin: D1
+    id: gate_relay
+    name: "Gate"
+    icon: "mdi:gate"
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      - delay: 500ms
+      - switch.turn_off: gate_relay
+
+  # -------- DoorBell Relay (normal) --------
+  - platform: gpio
+    pin: D2
+    id: doorbell_relay
+    name: "DoorBell"
+    icon: "mdi:bell"
+    restore_mode: RESTORE_DEFAULT_OFF
