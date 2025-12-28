@@ -1,0 +1,7 @@
+substitutions:
+  interfaces_api_package: !include ../interfaces/api.yaml
+  interfaces_mqtt_package: !include ../interfaces/mqtt.yaml
+
+packages:
+  - ${ interfaces_enabled_api and interfaces_api_package or {} }
+  - ${ interfaces_enabled_mqtt and interfaces_mqtt_package or {} }

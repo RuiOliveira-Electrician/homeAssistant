@@ -1,0 +1,40 @@
+---
+# Wi-Fi component package
+#
+# Contains my common Wi-Fi setup.
+#
+# https://esphome.io/components/wifi.html
+#
+substitutions:
+  wifi_ssid: !secret wifi_iot_ssid
+  wifi_password: !secret wifi_iot_password
+
+  wifi_static_ip: ""
+  wifi_ap_password: "esphome-${slug}"
+  wifi_internal_package: !include ../wifi/internalNetwork.yaml
+
+  wireguard_ddns_host: !secret ddns_host
+  wireguard_ddns_domain: !secret ddns_domain
+  wireguard_address: ""
+  wireguard_private_key: ""
+  wireguard_peer_public_key: !secret esphome_wireguard_peer_public_key
+  wifi_vpn_package: !include ../wifi/wireguard.yaml
+
+  wifi_captive_portal_package: !include ../wifi/captive_portal.yaml
+
+packages:
+  - ${ wifi_enabled_VPN and wifi_vpn_package or wifi_internal_package }
+  - ${ not wifi_enabled_VPN and wifi_captive_portal_package or {} }
+
+wifi:
+  id: component_wifi
+  ssid: "${wifi_ssid}"
+  password: "${wifi_password}"
+  min_auth_mode: WPA2
+
+sensor:
+  - <<: !include ../sensors/wifi_signal_percentage.yaml
+  - <<: !include ../sensors/wifi_signal.yaml
+
+text_sensor:
+  - <<: !include ../sensors/text_sensors/wifi_info.yaml

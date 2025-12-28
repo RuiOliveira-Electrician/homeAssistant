@@ -3,11 +3,12 @@ substitutions:
   description: "Control of Water Pump Manual, Gate and DoorBell!"
   wifi_static_ip: 192.168.1.104
 
+  wifi_enabled_VPN: 0
+  interfaces_enabled_api: 1
+  interfaces_enabled_mqtt: 0
 packages:
-  wifi_config: !include wifi_connection/internalNetwork.yaml
   board: !include boards/wemos_d1_mini.yaml
-  <<: !include_dir_named common
-  <<: !include_dir_named common_api
+  <<: !include_dir_named packages/common
 
 output:
   - platform: gpio
@@ -27,10 +28,18 @@ binary_sensor:
   - platform: homeassistant
     entity_id: binary_sensor.water_pump_pressure_sensor
     id: water_pump_pressure_sensor
+    on_state:
+      then:
+        - lambda: |-
+            id(last_ha_update) = millis();
 
   - platform: homeassistant
     entity_id: binary_sensor.water_pump_running
     id: water_pump_running
+    on_state:
+      then:
+        - lambda: |-
+            id(last_ha_update) = millis();
 
   # -------- NEW: Water Pump Physical Switch --------
   - platform: gpio

@@ -1,0 +1,80 @@
+globals:
+  - id: last_ha_update
+    type: uint32_t
+    restore_value: false
+    initial_value: "0"
+
+  - id: error_mask
+    type: uint8_t
+    restore_value: false
+    initial_value: "0"
+
+binary_sensor:
+  - platform: template
+    id: diag_error_flag
+    name: "Error"
+    icon: mdi:alert
+    entity_category: diagnostic
+    device_class: problem
+    lambda: |-
+      return id(error_mask) != 0;
+
+text_sensor:
+  - platform: template
+    id: diag_error
+    name: "Error Type"
+    icon: mdi:alert-circle-outline
+    entity_category: diagnostic
+    update_interval: never
+
+interval:
+  - interval: 2s
+    then:
+      - lambda: |-
+          uint8_t mask = 0;
+          uint32_t now = millis();
+
+          constexpr bool API_ENABLED  = ${interfaces_enabled_api} == 1;
+          constexpr bool MQTT_ENABLED = ${interfaces_enabled_mqtt} == 1;
+
+          // ---- HA timeout ----
+          if ((now - id(last_ha_update)) > 20000) {
+            mask |= 0x01;
+          }
+
+          // ---- WiFi disconnected ----
+          if (!WiFi.isConnected()) {
+            mask |= 0x02;
+          }
+
+          // ---- ESPHome API disconnected ----
+          if (API_ENABLED && !id(esphome_status).state) {
+            mask |= 0x04;
+          }
+
+          // ---- MQTT disconnected ----
+          #ifdef USE_MQTT
+          if (MQTT_ENABLED && !mqtt::global_mqtt_client->is_connected()) {
+            mask |= 0x08;
+          }
+          #endif
+
+          // ---- Store mask ----
+          id(error_mask) = mask;
+
+          // ---- Update text sensor manually ----
+          if (mask == 0) {
+            id(diag_error).publish_state("OK");
+          } else {
+            std::string msg;
+
+            if (mask & 0x01) msg += "HA Timeout | ";
+            if (mask & 0x02) msg += "WiFi Down | ";
+            if (mask & 0x04) msg += "API Down | ";
+            if (mask & 0x08) msg += "MQTT Down | ";
+
+            // Remove last " | "
+            msg.erase(msg.size() - 3);
+
+            id(diag_error).publish_state(msg);
+          }

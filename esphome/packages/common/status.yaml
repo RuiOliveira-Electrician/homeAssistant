@@ -7,5 +7,5 @@
 #
 binary_sensor:
   - platform: status
-    id: online
+    id: esphome_status
     name: "Online"

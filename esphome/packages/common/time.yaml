@@ -10,7 +10,12 @@ substitutions:
   time_timezone: "Europe/Lisbon"
 
 globals:
-  - { id: daily_reset, type: bool, restore_value: false, initial_value: 'false' }
+  - {
+      id: daily_reset,
+      type: bool,
+      restore_value: false,
+      initial_value: "false",
+    }
 
 time:
   - <<: !include ../sensors/time/homeassistant.yaml

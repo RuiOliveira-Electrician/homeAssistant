@@ -7,31 +7,31 @@ globals:
   - id: ${tracker_id}_total_runtime_sec
     type: unsigned long
     restore_value: true
-    initial_value: '0'
+    initial_value: "0"
   - id: ${tracker_id}_daily_runtime_sec
     type: unsigned long
     restore_value: true
-    initial_value: '0'
+    initial_value: "0"
   - id: ${tracker_id}_total_consumption_kwh
     type: float
     restore_value: true
-    initial_value: '0.0'
+    initial_value: "0.0"
   - id: ${tracker_id}_daily_consumption_kwh
     type: float
     restore_value: true
-    initial_value: '0.0'
+    initial_value: "0.0"
   - id: ${tracker_id}_last_runtime_sec
     type: unsigned long
     restore_value: true
-    initial_value: '0'
+    initial_value: "0"
   - id: ${tracker_id}_power_w
     type: float
     restore_value: true
-    initial_value: '0'
+    initial_value: "0"
   - id: ${tracker_id}_active
     type: bool
     restore_value: false
-    initial_value: 'false'
+    initial_value: "false"
 
 sensor:
   # Runtime sensors are now internal (hidden)

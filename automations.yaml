@@ -16,16 +16,7 @@
     - sensor.inverter_internal_temperature
     id: trigger_inverter_state_change
     trigger: state
-    enabled: true
-  conditions:
-  - condition: sun
-    before: sunset
-    after: sunrise
-    enabled: false
-  - condition: numeric_state
-    entity_id: sensor.inverter_active_power
-    above: 200
-    enabled: false
+  conditions: []
   actions:
   - choose:
     - conditions:
@@ -34,8 +25,8 @@
       sequence:
       - data:
           topic: Inverter/GridWatts
-          payload: "{{ \n  (states('sensor.power_meter_active_power') | float(0))
-            * -1 +\n  ((states('sensor.boiler_surplus_load') | float(0)) - \n  (states('input_number.memory_boiler_after_inverter_data_polling')
+          payload: "{{\n  (states('sensor.power_meter_active_power') | float(0)) *
+            -1 +\n  ((states('sensor.boiler_surplus_load') | float(0)) -\n   (states('input_number.memory_boiler_after_inverter_data_polling')
             | float(0))) +\n  (states('input_number.boiler_adjustment_factor') | float(0))\n}}\n"
           qos: 1
           retain: true
@@ -109,7 +100,7 @@
         action: mqtt.publish
       - data:
           entity_id: input_number.memory_boiler_after_inverter_data_polling
-          value: '{{ states(''sensor.boiler_surplus_load'') | float(0.0) }}'
+          value: '{{ states(''sensor.boiler_surplus_load'') | float(0) }}'
         action: input_number.set_value
   mode: queued
   max: 10
@@ -256,10 +247,16 @@
       - condition: state
         entity_id: input_boolean.water_box_control_auto
         state: 'on'
-      - condition: state
-        entity_id: input_boolean.water_pump_forced_man
-        state:
-        - 'off'
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.eletrical_bord_water_pump_switch_man
+          state:
+          - 'off'
+        - condition: state
+          entity_id: input_boolean.water_pump_forced_man
+          state:
+          - 'off'
       - condition: state
         entity_id: input_boolean.boiler_adjustment_added
         state:
@@ -393,10 +390,16 @@
       - condition: trigger
         id:
         - forced_man
-      - condition: state
-        entity_id: binary_sensor.eletrical_bord_water_pump_switch_man
-        state:
-        - 'on'
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.eletrical_bord_water_pump_switch_man
+          state:
+          - 'on'
+        - condition: state
+          entity_id: input_boolean.water_pump_forced_man
+          state:
+          - 'on'
       sequence:
       - action: select.select_option
         metadata: {}
@@ -408,10 +411,16 @@
       - condition: trigger
         id:
         - forced_man
-      - condition: state
-        entity_id: binary_sensor.eletrical_bord_water_pump_switch_man
-        state:
-        - 'off'
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.eletrical_bord_water_pump_switch_man
+          state:
+          - 'off'
+        - condition: state
+          entity_id: input_boolean.water_pump_forced_man
+          state:
+          - 'off'
       sequence:
       - action: select.select_option
         metadata: {}
@@ -627,4 +636,32 @@
         target:
           entity_id: select.boiler_mode
       alias: AUTO
+  mode: single
+- id: '1766953516614'
+  alias: Freeds reboot
+  description: Reboot freeds if boiler error persists for 15 minutes
+  triggers:
+  - entity_id: binary_sensor.boiler_error
+    to: 'on'
+    trigger: state
+  conditions: []
+  actions:
+  - delay:
+      hours: 0
+      minutes: 15
+      seconds: 0
+      milliseconds: 0
+  - condition: state
+    entity_id: binary_sensor.boiler_error
+    state: 'on'
+  - data:
+      title: Freeds reboot triggered
+      message: 'Boiler error has been active for 15 minutes. Freeds reboot button
+        is being pressed.
+
+        '
+    action: persistent_notification.create
+  - target:
+      entity_id: button.boiler_reboot
+    action: button.press
   mode: single

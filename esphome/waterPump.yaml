@@ -3,38 +3,37 @@ substitutions:
   description: "Control of Water Pump!"
   wifi_static_ip: 192.168.1.103
 
+  wifi_enabled_VPN: 0
+  interfaces_enabled_api: 1
+  interfaces_enabled_mqtt: 0
+
 packages:
-  wifi_config: !include wifi_connection/internalNetwork.yaml
+  board: !include boards/wemos_d1_mini.yaml
+  <<:
+    !include_dir_named packages/common
 
     # === TWO TRACKERS ===
   tracker: !include
-    file: sensors/templates/energy_template.yaml
+    file: packages/sensors/templates/energy_template.yaml
     vars:
       tracker_id: tracker
       tracker_name: "Global"
 
   tracker_man: !include
-    file: sensors/templates/energy_template.yaml
+    file: packages/sensors/templates/energy_template.yaml
     vars:
       tracker_id: tracker_man
       tracker_name: "MAN"
 
   tracker_auto: !include
-    file: sensors/templates/energy_template.yaml
+    file: packages/sensors/templates/energy_template.yaml
     vars:
       tracker_id: tracker_auto
       tracker_name: "AUTO"
-  board: !include boards/wemos_d1_mini.yaml
-  <<: !include_dir_named common
-  <<: !include_dir_named common_api
-
-
 
 # === GLOBAL VARIABLES ===
 globals:
-  - { id: mode_state, type: int, restore_value: true, initial_value: '0' }
-
-
+  - { id: mode_state, type: int, restore_value: true, initial_value: "0" }
 
 esphome:
   on_boot:
@@ -45,7 +44,6 @@ esphome:
           id(pump_power).publish_state(id(tracker_power_w));
 
           ESP_LOGI("boot", "Restored Power: %.1fW", id(tracker_power_w));
-
 
 # === MODE SELECTOR ===
 select:
@@ -143,7 +141,7 @@ interval:
           float pump_required_power = id(tracker_power_w) + 5;
 
           // ====== SAFETY CHECK ======
-          if (id(error_flag) && id(mode_state) != 1) {
+          if (id(error_mask) != 0 && id(mode_state) != 1) {
               if (id(contactor).state) {
                   id(contactor).turn_off();
                   ESP_LOGW("safety", "HA Timeout → Pump OFF (safety mode)");
