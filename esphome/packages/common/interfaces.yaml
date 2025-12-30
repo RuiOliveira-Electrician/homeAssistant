@@ -1,7 +1,20 @@
 substitutions:
-  interfaces_api_package: !include ../interfaces/api.yaml
-  interfaces_mqtt_package: !include ../interfaces/mqtt.yaml
+  wifi_ssid: !secret wifi_iot_ssid
+  wifi_password: !secret wifi_iot_password
+
+  wifi_static_ip: ""
+  wifi_ap_password: "esphome-${slug}"
+  wifi_internal_package: !include ../wifi/internalNetwork.yaml
+
+  wireguard_ddns_host: !secret ddns_host
+  wireguard_ddns_domain: !secret ddns_domain
+  wireguard_address: ""
+  wireguard_private_key: ""
+  wireguard_peer_public_key: !secret esphome_wireguard_peer_public_key
+
+  interfaces_mqtt_package: !include ../wifi/captive_portal.yaml
+  interfaces_api_package: !include ../wifi/wireguard.yaml
 
 packages:
+  - ${ interfaces_enabled_mqtt and interfaces_mqtt_package }
   - ${ interfaces_enabled_api and interfaces_api_package or {} }
-  - ${ interfaces_enabled_mqtt and interfaces_mqtt_package or {} }
