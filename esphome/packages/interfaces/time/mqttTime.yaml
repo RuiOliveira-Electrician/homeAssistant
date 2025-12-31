@@ -1,0 +1,4 @@
+time:
+
+  - <<: !include ../../sensors/time/sntp.yaml
+    timezone: "${time_timezone}"

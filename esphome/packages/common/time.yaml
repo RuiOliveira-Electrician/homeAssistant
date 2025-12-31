@@ -9,6 +9,12 @@
 substitutions:
   time_timezone: "Europe/Lisbon"
 
+  interfaces_time_api_package: !include ../interfaces/time/apiTime.yaml
+  interfaces_time_mqtt_package: !include ../interfaces/time/mqttTime.yaml
+
+packages:
+  - ${ interfaces_enabled_api and interfaces_time_api_package or interfaces_time_mqtt_package }
+
 globals:
   - {
       id: daily_reset,
@@ -16,16 +22,5 @@ globals:
       restore_value: false,
       initial_value: "false",
     }
-
-time:
-  - <<: !include ../sensors/time/homeassistant.yaml
-    timezone: "${time_timezone}"
-    on_time_sync:
-      - component.update: sensor_uptime_timestamp
-
-  - <<: !include ../sensors/time/sntp.yaml
-    timezone: "${time_timezone}"
-
 sensor:
   - <<: !include ../sensors/uptime.yaml
-  - <<: !include ../sensors/uptime_timestamp.yaml
