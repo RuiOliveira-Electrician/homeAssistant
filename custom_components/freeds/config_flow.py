@@ -1,7 +1,7 @@
 from homeassistant import config_entries
 from .const import DOMAIN
 from homeassistant.const import CONF_HOST, CONF_PORT, CONF_USERNAME, CONF_PASSWORD
-from homeassistant.components import zeroconf
+from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 import voluptuous as vol
 import logging
 from typing import Any, Final
@@ -11,8 +11,6 @@ import re
 
 
 _LOGGER = logging.getLogger(__name__)
-
-session = aiohttp.ClientSession()
 
 
 class FreeDSConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -30,7 +28,7 @@ class FreeDSConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.default_port = 80
 
     async def async_step_zeroconf(
-        self, discovery_info: zeroconf.ZeroconfServiceInfo
+        self, discovery_info: ZeroconfServiceInfo
     ) -> FlowResult:
         # Check if there's a config entry for this host,
         # ignore discovery if so.
@@ -120,6 +118,9 @@ class FreeDSConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def _async_get_info(self, host, port=80, user=None, passwd=None):
+
+        session = aiohttp.ClientSession()
+
         auth = None
         if user is not None:
             auth = aiohttp.BasicAuth(user, passwd)
