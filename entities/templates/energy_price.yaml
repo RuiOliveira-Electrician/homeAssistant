@@ -4,11 +4,13 @@ sensor:
     unique_id: current_energy_price_eur_kwh
     unit_of_measurement: "€/kWh"
     state: >
-      {% set period = states('sensor.energy_price_hours') %}
-      {% if period == 'lowPrice' %}
+      {% set tariff = states('select.daily_energy') %}
+      {% if tariff == 'offpeak' %}
         0.1162
-      {% else %}
+      {% elif tariff == 'peak' %}
         0.1861
+      {% else %}
+        unknown
       {% endif %}
   - name: "Actual Sell Energy Price €/kWh"
     unique_id: actual_sell_energy_price_eur_kwh
