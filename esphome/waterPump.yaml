@@ -35,16 +35,6 @@ packages:
 globals:
   - { id: mode_state, type: int, restore_value: true, initial_value: "0" }
 
-esphome:
-  on_boot:
-    priority: 800
-    then:
-      - lambda: |-
-          // Restaurar valor do power para o número da UI
-          id(pump_power).publish_state(id(tracker_power_w));
-
-          ESP_LOGI("boot", "Restored Power: %.1fW", id(tracker_power_w));
-
 # === MODE SELECTOR ===
 select:
   - platform: template
@@ -78,13 +68,29 @@ binary_sensor:
     filters:
       - delayed_on: 200ms
       - delayed_off: 200ms
+    on_press:
+      then:
+        - lambda: |-
+            id(tracker_active) = 0;
+            id(tracker_man_active) = 0;
+            id(tracker_auto_active) = 0;
 
   - platform: template
     name: "Running"
     id: running
     device_class: power
     lambda: |-
-      return id(tracker_active);
+      return id(contactor).state && !id(sensor_pressure).state;
+
+  - platform: template
+    name: "Using Surplus Energy"
+    id: pump_surplus_usage
+    icon: "mdi:leaf"
+    device_class: power
+    lambda: |-
+      float available_power = id(sensor_power_meter_active_power).state;
+      float pump_required_power = id(tracker_power_w) + 5;
+      return available_power > pump_required_power && id(tracker_active);
 
 # === CONFIGURABLE PUMP POWER ===
 number:
@@ -102,12 +108,23 @@ number:
     restore_value: true
     set_action:
       - lambda: |-
-          id(tracker_power_w) = x;
-          id(tracker_man_power_w) = x;
-          id(tracker_auto_power_w) = x;
           ESP_LOGI("pump", "Pump Power set to %.1f W", x);
+    on_value:
+      then:
+        - lambda: |-
+            id(tracker_power_w) = x;
+            id(tracker_man_power_w) = x;
+            id(tracker_auto_power_w) = x;
+            ESP_LOGI("pump", "on_value triggered: %.1f", x);
 
 # === SENSORS ===
+text_sensor:
+  - platform: template
+    name: "Energy Source"
+    id: pump_energy_source
+    icon: "mdi:transmission-tower"
+
+
 sensor:
   - platform: homeassistant
     id: sensor_inverter_active_power
@@ -131,15 +148,29 @@ interval:
   - interval: 2s
     then:
       - lambda: |-
+          float p = id(pump_power).state;
+          ESP_LOGW("tracker", "MAN active: %s", id(tracker_man_active) ? "true" : "false");
+          ESP_LOGW("tracker", "tracker_man_power_w is %.1f", id(tracker_man_power_w));
+          if (id(tracker_power_w) < 0) {
+             ESP_LOGW("tracker", "tracker_power_w was invalid (%.1f) → fixing", id(tracker_power_w));
+             id(tracker_power_w) = p;
+           }
+
+           if (id(tracker_man_power_w) < 0) {
+             ESP_LOGW("tracker", "tracker_man_power_w was invalid (%.1f) → fixing", id(tracker_man_power_w));
+             id(tracker_man_power_w) = p;
+           }
+
+           if (id(tracker_auto_power_w) < 0) {
+             ESP_LOGW("tracker", "tracker_auto_power_w was invalid (%.1f) → fixing", id(tracker_auto_power_w));
+             id(tracker_auto_power_w) = p;
+           }
           // ====== UPDATE PUMP ACTIVE STATE ======
-          id(tracker_active) = id(contactor).state && !id(sensor_pressure).state;
-          id(tracker_man_active) = id(tracker_active) && (id(mode_state) == 1);
-          id(tracker_auto_active) = id(tracker_active) && (id(mode_state) == 2);          
-
-
           float available_power = id(sensor_power_meter_active_power).state;
           float pump_required_power = id(tracker_power_w) + 5;
 
+
+              
           // ====== SAFETY CHECK ======
           if (id(error_mask) != 0 && id(mode_state) != 1) {
               if (id(contactor).state) {
@@ -158,7 +189,7 @@ interval:
                   break;
 
               case 1: // MANUAL
-                  if (!id(tracker_active)) {   // <-- FIXED: added closing parenthesis
+                  if (!id(running).state) {   // <-- FIXED: added closing parenthesis
                       id(contactor).turn_on();
                       ESP_LOGI("mode", "MAN → Pump ON via Manual Tracker");
                   }
@@ -166,12 +197,20 @@ interval:
 
               case 2: // AUTO
                   // Hysteresis to avoid rapid ON/OFF
-                  if (available_power > pump_required_power && !id(tracker_active)) {
+                  if (available_power > pump_required_power && !id(running).state) {
                       id(contactor).turn_on();
                       ESP_LOGI("mode", "AUTO → Available %.1fW > Pump %.1fW → Pump ON", available_power, pump_required_power);
-                  } else if ((available_power <= 0 && id(tracker_active))) {
+                  } else if ((available_power <= 0 && id(running).state)) {
                       id(contactor).turn_off();
                       ESP_LOGI("mode", "AUTO → Available %.1fW ≤ Pump %.1fW → Pump OFF", available_power, pump_required_power);
                   }
                   break;
+          }
+          id(tracker_active) = id(running).state;
+          id(tracker_man_active) = id(running).state;
+          // Energy source
+          if (id(running).state) {
+            id(pump_energy_source).publish_state(available_power > pump_required_power ? "Surplus" : "Grid");
+          } else {
+            id(pump_energy_source).publish_state("Idle");
           }
