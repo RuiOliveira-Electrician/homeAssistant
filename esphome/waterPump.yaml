@@ -185,6 +185,8 @@ interval:
                   if (id(contactor).state) {
                       id(contactor).turn_off();
                       ESP_LOGI("mode", "OFF → Pump OFF");
+                  id(tracker_auto_active) = id(running).state;
+                  id(tracker_man_active) = id(running).state;
                   }
                   break;
 
@@ -193,6 +195,7 @@ interval:
                       id(contactor).turn_on();
                       ESP_LOGI("mode", "MAN → Pump ON via Manual Tracker");
                   }
+                  id(tracker_man_active) = id(running).state;
                   break;
 
               case 2: // AUTO
@@ -204,10 +207,11 @@ interval:
                       id(contactor).turn_off();
                       ESP_LOGI("mode", "AUTO → Available %.1fW ≤ Pump %.1fW → Pump OFF", available_power, pump_required_power);
                   }
+                  id(tracker_auto_active) = id(running).state;
                   break;
           }
           id(tracker_active) = id(running).state;
-          id(tracker_man_active) = id(running).state;
+
           // Energy source
           if (id(running).state) {
             id(pump_energy_source).publish_state(available_power > pump_required_power ? "Surplus" : "Grid");
