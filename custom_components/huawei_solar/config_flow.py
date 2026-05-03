@@ -1018,7 +1018,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         task, self._discovery_task = self._discovery_task, None
         try:
             info = task.result()
-        except ConnectionException, ModbusConnectionError, TimeoutError:
+        except (ConnectionException, ModbusConnectionError, TimeoutError):
             _LOGGER.warning("Could not connect to %s:%s", self._host, self._port)
             return self.async_show_progress_done(next_step_id="cannot_connect")
         except DeviceException as err:
@@ -1038,7 +1038,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._port,
             )
             return self.async_show_progress_done(next_step_id="connection_interrupted")
-        except HuaweiSolarException, ReadException:
+        except (HuaweiSolarException, ReadException):
             _LOGGER.exception("Error while connecting to %s:%s", self._host, self._port)
             return self.async_show_progress_done(next_step_id="cannot_connect")
         except Exception:  # allowed in config flow
@@ -1192,7 +1192,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         task, self._discovery_task = self._discovery_task, None
         try:
             info = task.result()
-        except ConnectionException, ModbusConnectionError, TimeoutError:
+        except (ConnectionException, ModbusConnectionError, TimeoutError):
             _LOGGER.warning(
                 "Could not connect to discovered device at %s:%s unit_id %s",
                 self._host,
@@ -1209,7 +1209,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._port,
             )
             return self.async_show_progress_done(next_step_id="connection_interrupted")
-        except HuaweiSolarException, DeviceException:
+        except (HuaweiSolarException, DeviceException):
             _LOGGER.exception(
                 "Error while connecting to discovered device at %s:%s unit_id %s",
                 self._host,
@@ -1329,7 +1329,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     return await self._create_or_update_entry(self._inverter_info)
 
                 errors["base"] = "invalid_auth"
-            except ConnectionException, ModbusConnectionError:
+            except (ConnectionException, ModbusConnectionError):
                 errors["base"] = "cannot_connect"
             except DeviceException:
                 errors["base"] = "slave_cannot_connect"
