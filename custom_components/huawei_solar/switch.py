@@ -228,14 +228,14 @@ class HuaweiSolarSwitchEntity(
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the setting on."""
-        if await self.device.client.set(self.entity_description.register_name, True):
+        if await self.device.set(self.entity_description.register_name, True):
             self._attr_is_on = True
 
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the setting off."""
-        if await self.device.client.set(self.entity_description.register_name, False):
+        if await self.device.set(self.entity_description.register_name, False):
             self._attr_is_on = False
 
         await self.coordinator.async_request_refresh()
