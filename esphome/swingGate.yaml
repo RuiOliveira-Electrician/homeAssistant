@@ -1,0 +1,464 @@
+substitutions:
+  slug: swing_gate
+  description: Two-motor swing gate with smart reopening and barrier safety
+  wifi_static_ip: 192.168.1.110
+
+  CLOSED: "0"
+  OPEN: "1"
+  MOVING_OPEN: "2"
+  MOVING_CLOSE: "3"
+  PARCIAL_OPEN: "4"
+  BARRIER_OPEN: "5"
+  MOVING_CLOSE_TIMER: "6"
+
+  INITIAL_MOVEMENT_TIMER: "10"
+  INITIAL_MOVEMENT_TIMER_LEFT: "5"
+  INITIAL_MOVEMENT_TIMER_RIGHT: "5"
+  AUTO_CLOSE_TIMER: "60"
+
+packages:
+  wifi_config: !include wifi_connection/internalNetwork.yaml
+  board: !include boards/wemos_d1_mini.yaml
+  <<: !include_dir_named common
+  <<: !include_dir_named common_api
+
+esphome:
+  on_boot:
+    priority: -100
+    then:
+      - script.execute: publish_gate_status
+
+# =====================
+# SWITCHES (Motors)
+# =====================
+switch:
+  - platform: gpio
+    pin: D1
+    id: motor_left
+    internal: true
+
+  - platform: gpio
+    pin: D2
+    id: motor_right
+    internal: true
+
+  - platform: gpio
+    pin: D4
+    id: motor_both_open_close
+    internal: true
+
+# =====================
+# TEXT SENSORS
+# =====================
+text_sensor:
+  - platform: template
+    name: "Gate Status"
+    id: gate_status_sensor
+
+# =====================
+# GLOBAL VARIABLES
+# =====================
+globals:
+  - { id: gate_status, type: int, restore_value: yes, initial_value: '${CLOSED}' }
+  - { id: gate_movement_timer_left, type: int, restore_value: yes, initial_value: '${INITIAL_MOVEMENT_TIMER}' }
+  - { id: gate_movement_timer_right, type: int, restore_value: yes, initial_value: '${INITIAL_MOVEMENT_TIMER}' }
+
+  - { id: gate_movement_timer_left_counter, type: int }
+  - { id: gate_movement_timer_right_counter, type: int }
+  - { id: auto_close_timer_counter, type: int }
+
+  - { id: gate_motion_time_left, type: float }
+  - { id: gate_motion_time_right, type: float }
+
+  - { id: script_reopening_reclosing, type: bool }
+  - { id: operate_motor_left, type: bool }
+  - { id: operate_motor_right, type: bool }
+
+# =====================
+# BUTTONS
+# =====================
+button:
+  - platform: template
+    id: ha_toggle_button
+    name: "Gate Toggle (HA)"
+    on_press: {script.execute: toggle_gate}
+
+  - platform: template
+    id: ha_toggle_Barrier
+    name: "Gate Toggle Barrier (HA)"
+    on_press:
+      - if:
+          condition:
+            lambda: "return id(gate_status) == ${MOVING_CLOSE};"
+          then:
+            - script.execute: handle_barrier_triggered
+
+# =====================
+# BINARY SENSORS
+# =====================
+binary_sensor:
+  - platform: template
+    name: "Motor Left Active"
+    lambda: "return id(motor_left).state;"
+
+  - platform: template
+    name: "Motor Right Active"
+    lambda: "return id(motor_right).state;"
+
+  - platform: template
+    name: "Motor Both Opening"
+    lambda: "return id(motor_both_open_close).state;"    
+
+  - platform: template
+    name: "Motor Both Closing"
+    lambda: "return !id(motor_both_open_close).state;"    
+
+  - platform: gpio
+    id: toggle_button
+    name: "Gate Toggle Radio Button"
+    pin: {number: D7, mode: INPUT_PULLUP, inverted: true}
+    on_press: {script.execute: toggle_gate}
+
+  - platform: gpio
+    id: barrier_sensor
+    name: "Barrier Sensor"
+    pin: {number: D3, mode: INPUT_PULLUP, inverted: true}
+    device_class: motion
+    on_press:
+      - if:
+          condition:
+            lambda: "return id(gate_status) == ${MOVING_CLOSE};"
+          then:
+            - script.execute: handle_barrier_triggered
+
+# =====================
+# INTERVAL TIMER
+# =====================
+interval:
+  - interval: 1s
+    then:
+      # LEFT MOTOR TIMER
+      - if:
+          condition:
+            lambda: "return id(motor_left).state;"
+          then: {globals.set: {id: gate_movement_timer_left_counter, value: !lambda "return id(gate_movement_timer_left_counter) + 1;" }}
+
+      # RIGHT MOTOR TIMER
+      - if:
+          condition:
+            lambda: "return id(motor_right).state;"
+          then: {globals.set: {id: gate_movement_timer_right_counter, value: !lambda "return id(gate_movement_timer_right_counter) + 1;" }}
+
+      # AUTO-CLOSE TIMER
+      - if:
+          condition:
+            lambda: "return id(gate_status) == ${OPEN} || id(gate_status) == ${PARCIAL_OPEN};"
+          then: {globals.set: {id: auto_close_timer_counter, value: !lambda "return id(auto_close_timer_counter) + 1;" }}
+          else: {globals.set: {id: auto_close_timer_counter, value: '0'}}
+
+      - if:
+          condition:
+            lambda: "return id(auto_close_timer_counter) >= ${AUTO_CLOSE_TIMER};"
+          then:
+            - if:
+                condition: {not: {binary_sensor.is_on: barrier_sensor}}
+                then:
+                  - script.execute: gate_auto_closing
+                else:
+                  - logger.log: "⚠️ Auto-close blocked — barrier active"
+
+# =====================
+# SCRIPTS
+# =====================
+script:
+  # ---------------------
+  # STOP ALL MOTORS
+  # ---------------------
+  - id: stop_all
+    mode: queued
+    then:
+      - switch.turn_off: motor_left
+      - switch.turn_off: motor_right
+      - switch.turn_off: motor_both_open_close
+      - globals.set: { id: operate_motor_right, value: 'false' }
+      - globals.set: { id: operate_motor_left, value: 'false' }
+      - script.stop: operate_motor
+      - delay: 0.5s
+      - logger.log: "All gate movements stopped"
+
+  # ---------------------
+  # GATE REOPENING AFTER BARRIER
+  # ---------------------
+  - id: gate_reopening_reclosing
+    parameters:
+      direction_open: bool
+    then:
+      - globals.set: { id: script_reopening_reclosing, value: 'true' } 
+      - script.execute: publish_gate_status
+      - script.execute: stop_all
+      - script.wait: stop_all
+      - logger.log: "gate_reopening_reclosing"
+      - if:
+          condition:
+            lambda: 'return direction_open;'
+          then:
+            - script.execute: {id: operate_motor, side: "right", direction: "open", mode: 2}
+            - script.execute: {id: operate_motor, side: "left", direction: "open", mode: 2}
+          else:
+            - script.execute: {id: operate_motor, side: "left", direction: "close", mode: 2}
+            - script.execute: {id: operate_motor, side: "right", direction: "close", mode: 2}
+
+  - id: gate_auto_closing
+    then:
+      - script.execute: stop_all
+      - script.wait: stop_all
+      - lambda: |-
+          ESP_LOGI("gate", "⏱ Auto-close triggered");
+          int motor_mode = (id(gate_status) == ${OPEN}) ? 1 : 2;
+          id(gate_status) = ${MOVING_CLOSE_TIMER};
+          id(publish_gate_status).execute();
+          id(operate_motor).execute("right", "open", motor_mode);
+          id(operate_motor).execute("left", "open", motor_mode);
+      - logger.log: "gate_auto_closing"
+
+  - id: handle_barrier_triggered
+    then:
+      - logger.log: "⚠️ Barrier triggered — reopening gate" 
+      - globals.set: {id: gate_status, value: '${BARRIER_OPEN}'}
+      - script.execute: {id: gate_reopening_reclosing, direction_open: true}
+
+  - id: gate_set_parcial_open
+    then:
+      - globals.set: { id: gate_status, value: '${PARCIAL_OPEN}' } 
+      - script.execute: publish_gate_status
+      - script.execute: stop_all
+      - script.wait: stop_all
+      - logger.log: "gate_moving_open"
+
+  - id: gate_opening
+    then:
+      - script.execute: stop_all
+      - script.wait: stop_all
+      - logger.log: "gate_open"
+      - script.execute: {id: operate_motor, side: "left", direction: "close", mode: 1}
+      - globals.set: {id: gate_motion_time_right, value: '0'}
+      - while:
+          condition:
+            lambda: |-
+              return !id(stop_all).is_running() && id(gate_motion_time_right) < ${INITIAL_MOVEMENT_TIMER_RIGHT};
+          then:
+            - delay: 100ms
+            - globals.set: {id: gate_motion_time_right, value: !lambda "return id(gate_motion_time_right) + 0.1;" }     
+      - if:
+          condition:
+            lambda: 'return id(stop_all).is_running() == false;'
+          then:
+            - script.execute: {id: operate_motor, side: "right", direction: "close", mode: 1}
+
+  - id: gate_closing
+    then:
+      - script.execute: stop_all
+      - script.wait: stop_all
+      - logger.log: "gate_closing"
+      - script.execute: {id: operate_motor, side: "right", direction: "open", mode: 1}
+      - globals.set: { id: gate_motion_time_left, value: '0' }
+      - while:
+          condition:
+            lambda: |-
+              return !id(stop_all).is_running() && id(gate_motion_time_left) < ${INITIAL_MOVEMENT_TIMER_LEFT};
+          then:
+            - delay: 100ms
+            - globals.set: {id: gate_motion_time_left, value: !lambda "return id(gate_motion_time_left) + 0.1;" }
+      - if:
+          condition:
+            lambda: 'return id(stop_all).is_running() == false;'
+          then:
+            - script.execute: {id: operate_motor, side: "left", direction: "open", mode: 1}
+
+  # ---------------------
+  # MAIN TOGGLE LOGIC
+  # ---------------------
+  - id: toggle_gate
+    then:
+      - script.execute: publish_gate_status
+      - if:
+          condition:
+            lambda: "return !id(script_reopening_reclosing);"
+          then:
+            - if:
+                condition:
+                  lambda: "return id(gate_status) == ${OPEN};"
+                then:
+                  - script.execute: gate_opening
+            - if:
+                condition:
+                  lambda: "return id(gate_status) == ${PARCIAL_OPEN};"
+                then:
+                  - script.execute: {id: gate_reopening_reclosing, direction_open: false}
+            - if:
+                condition:
+                  lambda: "return id(gate_status) == ${CLOSED};"
+                then:
+                  - script.execute: gate_closing
+            - if:
+                condition:
+                  lambda: "return id(gate_status) == ${MOVING_OPEN};"
+                then:
+                  - script.execute: gate_set_parcial_open
+            - if:
+                condition:
+                  lambda: "return !id(operate_motor).is_running() && id(gate_status) == ${MOVING_CLOSE_TIMER};"
+                then:
+                  - script.execute: gate_auto_closing
+
+  # =====================
+  # MOTOR OPERATIONS
+  # =====================
+  - id: operate_motor
+    mode: parallel
+    parameters:
+      side: string
+      direction: string
+      mode: int
+    then:
+      - lambda: |-
+          ESP_LOGW("GATE", "operate_motor test: %d", id(operate_motor).is_running());
+          if(mode==1){
+            if(side == "left") id(gate_movement_timer_left) = ${INITIAL_MOVEMENT_TIMER};
+            else id(gate_movement_timer_right) = ${INITIAL_MOVEMENT_TIMER};
+          } else {
+            if(side == "left") id(gate_movement_timer_left) = id(gate_movement_timer_left_counter);
+            else id(gate_movement_timer_right) = id(gate_movement_timer_right_counter);
+          }
+          ESP_LOGW("gate", "→ timer_right=%d | timer_left=%d | Type=%d", id(gate_movement_timer_left_counter), id(gate_movement_timer_right_counter), mode);
+          if(side == "left") ESP_LOGW("gate", "→ timer_left=%d | Type=%d", id(gate_movement_timer_left), mode);
+          else  ESP_LOGW("gate", "→ timer_right=%d | Type=%d", id(gate_movement_timer_right), mode);
+      - if:
+          condition:
+            lambda: |-
+              int limit = (side == "left") ? id(gate_movement_timer_left) : id(gate_movement_timer_right);
+              bool operate_motor_flag = (side == "left") ? id(operate_motor_left) : id(operate_motor_right);
+              return (limit > 0) && !operate_motor_flag;
+          then:
+            - lambda: |-
+                float &time = (side == "left") ? id(gate_motion_time_left) : id(gate_motion_time_right);
+                int limit = (side == "left") ? id(gate_movement_timer_left) : id(gate_movement_timer_right);
+                time = 0;
+            
+                if(side == "left") {
+                  id(gate_movement_timer_left_counter) = 0;
+                  id(operate_motor_left) = true;
+                  id(motor_left).turn_on();
+                  ESP_LOGD("gate", "Motor left started");
+                }
+                else {
+                  id(gate_movement_timer_right_counter) = 0;
+                  id(operate_motor_right) = true;
+                  id(motor_right).turn_on();
+                  ESP_LOGD("gate", "Motor right started");
+                }
+                if (id(gate_status) != ${MOVING_OPEN} && id(gate_status) != ${MOVING_CLOSE}) {
+                  if(direction == "open") {
+                    id(gate_status) = ${MOVING_OPEN};
+                    id(motor_both_open_close).turn_on();
+                  }
+                  else {
+                    id(gate_status) = ${MOVING_CLOSE};
+                    id(motor_both_open_close).turn_off();
+                  }
+                  id(publish_gate_status).execute();
+                }
+
+            - if:
+                condition:
+                  lambda: 'return side == "left";'
+                then:
+                  - while:
+                      condition:
+                        lambda: |-
+                          float &time = id(gate_motion_time_left);
+                          int limit = id(gate_movement_timer_left);
+                          return !id(stop_all).is_running() && time < limit;
+                      then:
+                        - delay: 100ms
+                        - lambda: |-
+                            float &time = id(gate_motion_time_left);
+                            time += 0.1;
+                  - lambda: |-
+                      id(motor_left).turn_off();
+                      id(operate_motor_left) = false;
+                      ESP_LOGD("gate", "Motor left finished");
+                  
+            - if:
+                condition:
+                  lambda: 'return side == "right";'
+                then:
+                  - while:
+                      condition:
+                        lambda: |-
+                          float &time = id(gate_motion_time_right);
+                          int limit = id(gate_movement_timer_right);
+                          return !id(stop_all).is_running() && time < limit;
+                      then:
+                        - delay: 100ms
+                        - lambda: |-
+                            float &time = id(gate_motion_time_right);
+                            time += 0.1;
+                  - lambda: |-
+                      id(motor_right).turn_off();
+                      id(operate_motor_right) = false;
+                      ESP_LOGD("gate", "Motor right finished");
+            - script.execute: finalize_motion
+            - script.wait: finalize_motion
+          else:
+            - script.execute: finalize_motion 
+            - script.wait: finalize_motion
+
+  # =====================
+  # FINALIZE MOTION
+  # =====================
+  - id: finalize_motion
+    mode: queued
+    then:
+      - if:
+          condition: 
+            lambda: "return (!id(operate_motor_right) && !id(operate_motor_left));"
+          then:
+            - switch.turn_off: motor_both_open_close
+            - lambda: |-
+                if (id(gate_status) == ${MOVING_CLOSE}) {
+                  id(gate_status) = ${CLOSED};
+                } else if (id(gate_status) == ${MOVING_OPEN}) {
+                  id(gate_status) = ${OPEN};
+                } else if (id(gate_status) == ${BARRIER_OPEN} && id(gate_movement_timer_left) == 0 && id(gate_movement_timer_right) == 0) {
+                  id(gate_status) = ${OPEN};
+                } else if ((id(gate_status) == ${PARCIAL_OPEN} || id(gate_status) == ${MOVING_CLOSE_TIMER})  && id(gate_movement_timer_left) == 0 && id(gate_movement_timer_right) == 0) {
+                  id(gate_status) = ${CLOSED};
+                } else { 
+                  return;
+                }
+                id(publish_gate_status).execute();
+                id(gate_movement_timer_left_counter) = 0;
+                id(gate_movement_timer_right_counter) = 0;
+                id(script_reopening_reclosing) = false;
+                ESP_LOGI("gate", "finalize_motion done");  
+      - lambda: |-
+          ESP_LOGE("gate", "finalize_motion not done");
+
+  - id: publish_gate_status
+    mode: restart
+    then:
+      - lambda: |-
+          std::string txt;
+          switch (id(gate_status)) {
+            case ${CLOSED}: txt = "Closed"; break;
+            case ${OPEN}: txt = "Open"; break;
+            case ${MOVING_OPEN}: txt = "Opening"; break;
+            case ${MOVING_CLOSE}: txt = "Closing"; break;
+            case ${PARCIAL_OPEN}: txt = "Parcial Open"; break;
+            case ${BARRIER_OPEN}: txt = "Barrier Open"; break;
+            case ${MOVING_CLOSE_TIMER}: txt = "Closing Timer"; break;
+            default: txt = "Unknown"; break;
+          }
+          id(gate_status_sensor).publish_state(txt);
+          ESP_LOGI("gate", "Gate status updated -> %s", txt.c_str());
