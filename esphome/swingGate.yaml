@@ -23,8 +23,7 @@ substitutions:
 packages:
   wifi_config: !include wifi_connection/internalNetwork.yaml
   board: !include boards/wemos_d1_mini.yaml
-  <<: !include_dir_named common
-  <<: !include_dir_named common_api
+  <<: !include_dir_named packages/common
 
 esphome:
   on_boot:
