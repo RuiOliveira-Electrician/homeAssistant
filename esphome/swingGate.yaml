@@ -21,7 +21,6 @@ substitutions:
   AUTO_CLOSE_TIMER: "60"
 
 packages:
-  wifi_config: !include wifi_connection/internalNetwork.yaml
   board: !include boards/wemos_d1_mini.yaml
   <<: !include_dir_named packages/common
 
