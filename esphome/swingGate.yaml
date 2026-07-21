@@ -3,6 +3,10 @@ substitutions:
   description: Two-motor swing gate with smart reopening and barrier safety
   wifi_static_ip: 192.168.1.110
 
+  wifi_enabled_VPN: 0
+  interfaces_enabled_api: 1
+  interfaces_enabled_mqtt: 0
+
   CLOSED: "0"
   OPEN: "1"
   MOVING_OPEN: "2"
