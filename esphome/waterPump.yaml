@@ -62,7 +62,6 @@ switch:
   - platform: gpio
     id: relay_water_Box_Garden
     pin: D3
-    internal: true
     restore_mode: RESTORE_DEFAULT_OFF
 
 # === PRESSURE SENSOR ===
