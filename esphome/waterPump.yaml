@@ -63,6 +63,8 @@ switch:
     id: relay_water_Box_Garden
     pin: D3
     restore_mode: RESTORE_DEFAULT_OFF
+    name: relay_water_Box_Garden
+    icon: "mdi:watering-can"
 
 # === PRESSURE SENSOR ===
 binary_sensor:
