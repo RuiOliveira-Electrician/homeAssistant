@@ -220,11 +220,11 @@ interval:
           id(tracker_active) = id(running).state;
 
           // Energy source
-          if (id(running).state) {
-            id(pump_energy_source).publish_state(available_power > pump_required_power ? "Surplus" : "Grid");
-          } else {
-            id(pump_energy_source).publish_state("Idle");
-          }
+          //if (id(running).state) {
+          //  id(pump_energy_source).publish_state(available_power > pump_required_power ? "Surplus" : "Grid");
+          //} else {
+          //  id(pump_energy_source).publish_state("Idle");
+          //}
           if (available_power > pump_required_power) {
             id(pump_energy_source).publish_state("Surplus");
           } else {
