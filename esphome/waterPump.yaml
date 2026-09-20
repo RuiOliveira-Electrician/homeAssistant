@@ -225,3 +225,8 @@ interval:
           } else {
             id(pump_energy_source).publish_state("Idle");
           }
+  if (available_power > pump_required_power) {
+    id(pump_energy_source).publish_state("Surplus");
+  } else {
+    id(pump_energy_source).publish_state("Grid");
+  }
