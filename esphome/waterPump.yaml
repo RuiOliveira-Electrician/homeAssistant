@@ -229,4 +229,4 @@ interval:
             id(pump_energy_source).publish_state("Surplus");
           } else {
             id(pump_energy_source).publish_state("Grid");
-          }fdsssssssssssssssssssssssssssssssssssssssssss
+          }
