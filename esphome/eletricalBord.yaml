@@ -35,7 +35,7 @@ binary_sensor:
 
   - platform: homeassistant
     entity_id: select.water_pump_mode
-    id: water_pump_active
+    id: water_pump_mode
     on_state:
       then:
         - lambda: |-
