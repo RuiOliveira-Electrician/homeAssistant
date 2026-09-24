@@ -42,6 +42,7 @@ text_sensor:
             id(last_ha_update) = millis();
 
 binary_sensor:
+  # -------- Existing HomeAssistant Sensors --------
   - platform: homeassistant
     entity_id: binary_sensor.water_pump_active
     id: water_pump_active
