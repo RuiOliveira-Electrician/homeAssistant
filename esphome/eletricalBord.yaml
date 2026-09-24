@@ -33,6 +33,7 @@ light:
               duration: 500ms
 
 text_sensor:
+  # -------- Existing HomeAssistant Sensors --------
   - platform: homeassistant
     entity_id: select.water_pump_mode
     id: water_pump_mode
