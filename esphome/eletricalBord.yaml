@@ -69,7 +69,6 @@ interval:
                 condition:
                   and:
                     - or:
-                        - binary_sensor.is_on: water_pump_pressure_sensor
                         - binary_sensor.is_on: water_pump_active
                     - binary_sensor.is_on: water_pump_switch_man
                 then:
