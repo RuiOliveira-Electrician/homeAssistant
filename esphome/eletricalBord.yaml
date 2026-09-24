@@ -23,6 +23,15 @@ light:
     output: built_in_led
     internal: true
 
+    effects:
+      - strobe:
+          name: "Pump Auto Flash"
+          colors:
+            - state: true
+              duration: 500ms
+            - state: false
+              duration: 500ms
+
 binary_sensor:
   # -------- Existing HomeAssistant Sensors --------
   - platform: homeassistant
