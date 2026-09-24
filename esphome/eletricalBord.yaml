@@ -70,7 +70,7 @@ interval:
                   and:
                     - or:
                         - binary_sensor.is_on: water_pump_pressure_sensor
-                        - binary_sensor.is_on: water_pump_running
+                        - binary_sensor.is_on: water_pump_active
                     - binary_sensor.is_on: water_pump_switch_man
                 then:
                   - light.turn_on: built_in_status_light
