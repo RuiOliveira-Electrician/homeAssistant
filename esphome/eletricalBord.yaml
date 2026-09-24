@@ -33,7 +33,7 @@ binary_sensor:
         - lambda: |-
             id(last_ha_update) = millis();
 
-
+water_pump_mode
 
   # -------- NEW: Water Pump Physical Switch --------
   - platform: gpio
