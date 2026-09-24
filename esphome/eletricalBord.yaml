@@ -32,6 +32,15 @@ light:
             - state: false
               duration: 500ms
 
+text_sensor:
+  - platform: homeassistant
+    entity_id: select.water_pump_mode
+    id: water_pump_mode
+    on_value:
+      then:
+        - lambda: |-
+            id(last_ha_update) = millis();
+
 binary_sensor:
   # -------- Existing HomeAssistant Sensors --------
   - platform: homeassistant
