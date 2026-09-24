@@ -26,7 +26,7 @@ light:
 binary_sensor:
   # -------- Existing HomeAssistant Sensors --------
   - platform: homeassistant
-    entity_id: binary_sensor.water_pump_pressure_sensor
+    entity_id: binary_sensor.water_pump_active
     id: water_pump_pressure_sensor
     on_state:
       then:
