@@ -90,11 +90,11 @@ binary_sensor:
       return id(contactor).state && !id(sensor_pressure).state;
 
   - platform: template
-    name: "Running"
-    id: running
+    name: "Active"
+    id: active
     device_class: power
     lambda: |-
-      return id(contactor).state && !id(sensor_pressure).state;
+      return id(running).state || id(sensor_pressure).state;
 
   - platform: template
     name: "Using Surplus Energy"
