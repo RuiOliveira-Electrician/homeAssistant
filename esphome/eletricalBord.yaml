@@ -34,13 +34,13 @@ binary_sensor:
             id(last_ha_update) = millis();
 
   - platform: homeassistant
-    entity_id: binary_sensor.water_pump_active
+    entity_id: select.water_pump_mode
     id: water_pump_active
     on_state:
       then:
         - lambda: |-
             id(last_ha_update) = millis();
-select.water_pump_mode
+
 
   # -------- NEW: Water Pump Physical Switch --------
   - platform: gpio
