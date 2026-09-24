@@ -91,7 +91,7 @@ interval:
           else:
             - light.turn_off: built_in_status_light
 
-            
+
 switch:
   # -------- Gate Relay (momentary) --------
   - platform: gpio
