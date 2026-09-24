@@ -33,13 +33,7 @@ binary_sensor:
         - lambda: |-
             id(last_ha_update) = millis();
 
-  - platform: homeassistant
-    entity_id: binary_sensor.water_pump_running
-    id: water_pump_running
-    on_state:
-      then:
-        - lambda: |-
-            id(last_ha_update) = millis();
+
 
   # -------- NEW: Water Pump Physical Switch --------
   - platform: gpio
