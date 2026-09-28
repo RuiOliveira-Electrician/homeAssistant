@@ -77,7 +77,7 @@ interval:
           then:
             - light.turn_on:
                 id: built_in_status_light
-                effect: none
+                effect: "Pump Auto Flash"
             # MANUAL → solid ON only when pump is running
       #      - if:
       #          condition:
