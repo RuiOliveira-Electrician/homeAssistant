@@ -76,8 +76,8 @@ interval:
             wifi.connected:
           then:
             - light.turn_on:
-      #                id: built_in_status_light
-      #                effect: none
+                id: built_in_status_light
+                effect: none
             # MANUAL → solid ON only when pump is running
       #      - if:
       #          condition:
