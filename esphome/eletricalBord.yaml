@@ -79,9 +79,9 @@ interval:
             # MANUAL → solid ON only when pump is running
             - if:
                 condition:
-                  and:
-                    - text_sensor.state:
-                        id: water_pump_mode
+                  #and:
+                  #  - text_sensor.state:
+                  #      id: water_pump_mode
                   #      state: "MAN"
                   - binary_sensor.is_on: water_pump_active
                 then:
