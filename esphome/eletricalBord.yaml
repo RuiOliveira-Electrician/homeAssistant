@@ -65,7 +65,7 @@ binary_sensor:
     pin:
       number: D6
       mode: INPUT_PULLUP
-    name: "Water Box Level"
+    name: "Water Box Level Full"
     id: water_box_level_full
     
 interval:
