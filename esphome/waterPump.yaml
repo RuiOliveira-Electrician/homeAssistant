@@ -162,23 +162,6 @@ interval:
   - interval: 2s
     then:
       - lambda: |-
-          float p = id(pump_power).state;
-          ESP_LOGW("tracker", "MAN active: %s", id(tracker_man_active) ? "true" : "false");
-          ESP_LOGW("tracker", "tracker_man_power_w is %.1f", id(tracker_man_power_w));
-          if (id(tracker_power_w) < 0) {
-             ESP_LOGW("tracker", "tracker_power_w was invalid (%.1f) → fixing", id(tracker_power_w));
-             id(tracker_power_w) = p;
-           }
-
-           if (id(tracker_man_power_w) < 0) {
-             ESP_LOGW("tracker", "tracker_man_power_w was invalid (%.1f) → fixing", id(tracker_man_power_w));
-             id(tracker_man_power_w) = p;
-           }
-
-           if (id(tracker_auto_power_w) < 0) {
-             ESP_LOGW("tracker", "tracker_auto_power_w was invalid (%.1f) → fixing", id(tracker_auto_power_w));
-             id(tracker_auto_power_w) = p;
-           }
           // ====== UPDATE PUMP ACTIVE STATE ======
           float available_power = id(sensor_power_meter_active_power).state;
           float pump_required_power = id(tracker_power_w) + 5;
@@ -216,10 +199,8 @@ interval:
                   // Hysteresis to avoid rapid ON/OFF
                   if (available_power > pump_required_power && !id(running).state) {
                       id(contactor).turn_on();
-                      ESP_LOGI("mode", "AUTO → Available %.1fW > Pump %.1fW → Pump ON", available_power, pump_required_power);
                   } else if ((available_power <= 0 && id(running).state)) {
                       id(contactor).turn_off();
-                      ESP_LOGI("mode", "AUTO → Available %.1fW ≤ Pump %.1fW → Pump OFF", available_power, pump_required_power);
                   }
                   id(tracker_auto_active) = id(running).state;
                   break;
