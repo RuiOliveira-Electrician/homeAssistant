@@ -79,9 +79,9 @@ interval:
             - if:
                 condition:
                  # and:
-                    - text_sensor.state:
-                        id: water_pump_mode
-                        state: "MAN"
+                  - text_sensor.state:
+                      id: water_pump_mode
+                      state: "MAN"
                   #- binary_sensor.is_on: water_pump_active
                 then:
                   - light.turn_on:
