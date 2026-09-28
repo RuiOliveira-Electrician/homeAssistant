@@ -60,6 +60,14 @@ binary_sensor:
     name: "Water Pump Switch Man"
     id: water_pump_switch_man
 
+  # -------- NEW: Water Pump Physical Switch --------
+  - platform: gpio
+    pin:
+      number: D6
+      mode: INPUT_PULLUP
+    name: "Water Box Level"
+    id: water_box_level
+    
 interval:
   - interval: 1s
     then:
