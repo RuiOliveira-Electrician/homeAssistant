@@ -91,7 +91,7 @@ interval:
                   - light.turn_off: built_in_status_light
 #
             # AUTO → flash only when pump is running
-              else:
+            - if:
                 condition:
                   and:
                     - text_sensor.state:
