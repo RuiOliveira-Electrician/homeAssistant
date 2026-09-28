@@ -71,10 +71,110 @@ binary_sensor:
 interval:
   - interval: 1s
     then:
+
+      # =========================================================
+      # WIFI DEBUG
+      # =========================================================
       - if:
           condition:
             wifi.connected:
           then:
+            - logger.log:
+                level: INFO
+                format: "DEBUG WIFI: CONNECTED"
+          else:
+            - logger.log:
+                level: WARN
+                format: "DEBUG WIFI: DISCONNECTED"
+
+
+      # =========================================================
+      # WATER PUMP MODE DEBUG
+      # =========================================================
+      - logger.log:
+          level: INFO
+          format: "DEBUG MODE: water_pump_mode = %s"
+          args:
+            - id(water_pump_mode).state.c_str()
+
+
+      # =========================================================
+      # WATER PUMP ACTIVE DEBUG
+      # =========================================================
+      - if:
+          condition:
+            binary_sensor.is_on: water_pump_active
+          then:
+            - logger.log:
+                level: INFO
+                format: "DEBUG PUMP: water_pump_active = ON"
+          else:
+            - logger.log:
+                level: INFO
+                format: "DEBUG PUMP: water_pump_active = OFF"
+
+
+      # =========================================================
+      # MAN CONDITION DEBUG
+      # =========================================================
+      - if:
+          condition:
+            text_sensor.state:
+              id: water_pump_mode
+              state: "MAN"
+          then:
+            - logger.log:
+                level: INFO
+                format: "DEBUG MAN: condition = TRUE"
+          else:
+            - logger.log:
+                level: INFO
+                format: "DEBUG MAN: condition = FALSE"
+
+
+      # =========================================================
+      # AUTO CONDITION DEBUG
+      # =========================================================
+      - if:
+          condition:
+            text_sensor.state:
+              id: water_pump_mode
+              state: "AUTO"
+          then:
+            - logger.log:
+                level: INFO
+                format: "DEBUG AUTO MODE: condition = TRUE"
+          else:
+            - logger.log:
+                level: INFO
+                format: "DEBUG AUTO MODE: condition = FALSE"
+
+
+      # =========================================================
+      # PUMP ACTIVE CONDITION DEBUG
+      # =========================================================
+      - if:
+          condition:
+            binary_sensor.is_on: water_pump_active
+          then:
+            - logger.log:
+                level: INFO
+                format: "DEBUG AUTO PUMP: condition = TRUE"
+          else:
+            - logger.log:
+                level: INFO
+                format: "DEBUG AUTO PUMP: condition = FALSE"
+
+
+      # =========================================================
+      # FINAL LIGHT LOGIC
+      # =========================================================
+      - if:
+          condition:
+            wifi.connected:
+          then:
+
+            # MAN + PUMP ON
             - if:
                 condition:
                   and:
@@ -83,12 +183,17 @@ interval:
                         state: "MAN"
                     - binary_sensor.is_on: water_pump_active
                 then:
-                  # MAN + pump running → solid ON
+                  - logger.log:
+                      level: INFO
+                      format: "DEBUG LIGHT: MAN + PUMP ON -> SOLID ON"
+
                   - light.turn_on:
                       id: built_in_status_light
                       effect: none
 
                 else:
+
+                  # AUTO + PUMP ON
                   - if:
                       condition:
                         and:
@@ -97,17 +202,27 @@ interval:
                               state: "AUTO"
                           - binary_sensor.is_on: water_pump_active
                       then:
-                        # AUTO + pump running → flashing
+                        - logger.log:
+                            level: INFO
+                            format: "DEBUG LIGHT: AUTO + PUMP ON -> AUTO FLASH"
+
                         - light.turn_on:
                             id: built_in_status_light
                             effect: "Pump Auto Flash"
+
                       else:
-                        # Not running / unknown mode → OFF
+                        - logger.log:
+                            level: INFO
+                            format: "DEBUG LIGHT: NO MATCH -> OFF"
+
                         - light.turn_off:
                             id: built_in_status_light
 
           else:
-            # WiFi disconnected → OFF
+            - logger.log:
+                level: WARN
+                format: "DEBUG LIGHT: WIFI OFF -> LIGHT OFF"
+
             - light.turn_off:
                 id: built_in_status_light
 
