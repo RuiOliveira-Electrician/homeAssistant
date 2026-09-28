@@ -82,8 +82,8 @@ interval:
                   and:
                     - text_sensor.state:
                         id: water_pump_mode
-                        state: "MAN"
-                    - binary_sensor.is_on: water_pump_active
+                  #      state: "MAN"
+                  - binary_sensor.is_on: water_pump_active
                 then:
                   - light.turn_on:
                       id: built_in_status_light
