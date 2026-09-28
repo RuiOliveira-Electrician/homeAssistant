@@ -105,7 +105,7 @@ interval:
 switch:
   # -------- Gate Relay (momentary) --------
   - platform: gpio
-    pin: D1
+    pin: D8
     id: gate_relay
     name: "Gate"
     icon: "mdi:gate"
