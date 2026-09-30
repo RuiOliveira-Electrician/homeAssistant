@@ -5,9 +5,5 @@
 # https://www.home-assistant.io/integrations/influxdb/
 #
 influxdb:
-  port: 8086
-  database: homeAssistant
-  username: !secret influxdb_username
-  password: !secret influxdb_password
   max_retries: 3
   default_measurement: state
