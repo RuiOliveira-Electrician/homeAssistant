@@ -5,9 +5,7 @@
 #
 # https://esphome.io/components/ota.html
 #
-substitutions:
-  ota_password: !secret esphome_ota_password
-
 ota:
   - platform: esphome
-    password: "${ota_password}"
+    encryption:
+      key: !secret esphome_api_encryptionKey

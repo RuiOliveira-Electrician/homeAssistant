@@ -14,6 +14,8 @@ substitutions:
 
 web_server:
   id: component_web_server
+  ota: false
   auth:
     username: "${web_server_username}"
     password: "${web_server_password}"
+    type: digest
